@@ -1,0 +1,90 @@
+/* Fondo general */
+.register-container {
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(135deg, #11a0cb, #257bfc);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Caja de registro estilo glassmorphism */
+.register-box {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 15px;
+  padding: 40px;
+  width: 400px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  color: #fff;
+  text-align: center;
+}
+
+
+/* Título */
+.register-box h2 {
+  margin-bottom: 20px;
+  font-size: 26px;
+  font-weight: bold;
+}
+
+/* Inputs */
+.register-box input {
+  width: 90%;
+  padding: 12px;
+  margin: 0.5rem 0;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  outline: none;
+  transition: background 0.3s;
+}
+
+.register-box input::placeholder {
+  color: #ddd;
+}
+
+
+.register-box select {
+  width: 95%;
+  padding: 12px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 8px;
+  outline: none;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  background: #2575fc;
+  color: #fff;           
+
+}
+
+/* Botón */
+.register-box button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 15px;
+  border: none;
+  border-radius: 8px;
+  background: #2575fc;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.register-box button:hover {
+  background: #1a5edb;
+}
+
+/* Link de login */
+.register-box p {
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.register-box a {
+  color: #fff;
+  text-decoration: underline;
+}
