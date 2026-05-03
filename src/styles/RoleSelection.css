@@ -1,29 +1,67 @@
 .role-selection-container {
-  text-align: center;
-  font-family: 'Segoe UI', sans-serif;
-  padding: 40px;
+  min-height: 100vh;
+  background: url("../assets/clinica.jpg") no-repeat center center fixed;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.role-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  color: #0078d4;
+}
+
+.role-header h2 {
+  font-size: 1.3rem;
+  margin-bottom: 40px;
+  color: #333;
 }
 
 .role-grid {
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 25px;
   flex-wrap: wrap;
-  margin-top: 30px;
 }
 
-.role-grid button {
-  background-color: #0078d4;
-  color: white;
-  border: none;
-  padding: 15px 25px;
-  border-radius: 10px;
-  font-size: 16px;
+.role-card {
+  width: 200px;
+  height: 140px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
   transition: 0.3s;
 }
 
-.role-grid button:hover {
-  background-color: #005a9e;
-  transform: scale(1.05);
+.role-card h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #0078d4;
 }
+
+.role-card p {
+  margin: 8px 0 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.role-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.25);
+}
+
+/* Colores diferenciados */
+.role-card.admin { border-top: 6px solid #0078d4; }
+.role-card.user { border-top: 6px solid #ff9800; }
+.role-card.doctor { border-top: 6px solid #4caf50; }
+.role-card.patient { border-top: 6px solid #00bcd4; }

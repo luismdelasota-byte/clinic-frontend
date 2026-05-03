@@ -12,14 +12,31 @@ const RoleSelection: React.FC = () => {
 
   return (
     <div className="role-selection-container">
-      <h1>Clínica San Luis</h1>
-      <h2>Selecciona tu rol para ingresar</h2>
+      <header className="role-header">
+        <h1>Clínica San Luis</h1>
+        <h2>Selecciona tu rol para ingresar</h2>
+      </header>
 
       <div className="role-grid">
-        <button onClick={() => handleRoleClick("ADMIN")}>ADMIN</button>
-        <button onClick={() => handleRoleClick("USER")}>USER</button>
-        <button onClick={() => handleRoleClick("DOCTOR")}>DOCTOR</button>
-        <button onClick={() => handleRoleClick("PATIENT")}>PATIENT</button>
+        <div className="role-card admin" onClick={() => handleRoleClick("ADMIN")}>
+          <h3>ADMIN</h3>
+          <p>Panel de control</p>
+        </div>
+
+        <div className="role-card user" onClick={() => handleRoleClick("USER")}>
+          <h3>USER</h3>
+          <p>Área del cajero</p>
+        </div>
+
+        <div className="role-card doctor" onClick={() => handleRoleClick("DOCTOR")}>
+          <h3>DOCTOR</h3>
+          <p>Área del médico</p>
+        </div>
+
+        <div className="role-card patient" onClick={() => handleRoleClick("PATIENT")}>
+          <h3>PATIENT</h3>
+          <p>Mi espacio personal</p>
+        </div>
       </div>
     </div>
   );
