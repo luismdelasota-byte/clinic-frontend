@@ -1,0 +1,29 @@
+.role-selection-container {
+  text-align: center;
+  font-family: 'Segoe UI', sans-serif;
+  padding: 40px;
+}
+
+.role-grid {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 30px;
+}
+
+.role-grid button {
+  background-color: #0078d4;
+  color: white;
+  border: none;
+  padding: 15px 25px;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.role-grid button:hover {
+  background-color: #005a9e;
+  transform: scale(1.05);
+}
