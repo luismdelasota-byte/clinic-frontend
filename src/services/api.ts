@@ -7,6 +7,7 @@
 -Axios es la herramienta que usaremos para hacer 
 peticiones HTTP(GET, POST, PUT, DELETE) al backend
 --Sin esto, no podemos comunicar el frontend con el backend*/
+//Axios -> conexion con la base de datos
 import axios from "axios";
 
 //Configuracion base de Axios
@@ -26,7 +27,7 @@ api.interceptors.request.use((config) => {
     //Si el usuario esta autenticando, es decir si el token existe
     if(token){
 
-        //Agrefamos el token en el "header" header HTTP
+        //Agregamos el token en el "header" header HTTP
         config.headers.Authorization = `Bearer ${token}`;
     }
 

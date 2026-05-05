@@ -41,20 +41,20 @@ const Dashboard: React.FC = () => {
           <section className="admin-section">
             <h3>ADMIN - Panel de Control</h3>
             <div className="cards">
-              <div className="card">
+              <div className="card" onClick={() => navigate("/patients")}>
                 <h4>Gestionar Pacientes</h4>
                 <p>Ver y editar registros de pacientes</p>
                 <span>98% completado</span>
               </div>
-              <div className="card">
-                <h4>Ver Reportes</h4>
-                <p>Ver y editar registros de reportes</p>
+              <div className="card" onClick={() => navigate("/appointments")}>
+                <h4>Gestionar Citas</h4>
+                <p>Agendar y/o reprogramar citas</p>
               </div>
-              <div className="card">
+              <div className="card" onClick={() => navigate("/doctors")} >
                 <h4>Gestionar Doctores</h4>
                 <p>4 médicos activos</p>
               </div>
-              <div className="card">
+              <div className="card" onClick={() => navigate("/schedule")}>
                 <h4>Horario Doctores</h4>
                 <p>Ver y editar horarios</p>
               </div>

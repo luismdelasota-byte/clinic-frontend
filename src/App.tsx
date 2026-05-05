@@ -4,6 +4,10 @@ import RoleSelection from "./pages/RoleSelection";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Register from "./pages/Register";
+import ManagePatients from "./pages/patients/ManagePatients";
+import ManageSchedule from "./pages/schedules/ManageSchedule";
+import ManageDoctors from "./pages/doctors/ManageDoctors";
+import ManageAppointments from "./pages/appointments/ManageAppointments";
 
 const App: React.FC = () => {
   return (
@@ -13,6 +17,10 @@ const App: React.FC = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/patients" element = {<ManagePatients/>}/>
+        <Route path="/doctors" element = {<ManageDoctors/>}/>
+        <Route path="/schedule" element = {<ManageSchedule/>} />
+        <Route path="/appointments" element = {<ManageAppointments/>} />
       </Routes>
     </Router>
   );
