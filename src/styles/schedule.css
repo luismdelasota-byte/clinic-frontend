@@ -172,3 +172,10 @@
   background-color: #ccc;
   cursor: not-allowed;
 }
+
+.schedule-page {
+  background: #e0f7fa; 
+  min-height: 100vh;   
+  padding: 30px;
+  border-radius: 12px;
+}

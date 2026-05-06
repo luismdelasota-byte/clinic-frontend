@@ -9,7 +9,7 @@ interface Patient {
   birthDate: string;
 }
 
-const RegisterPatient: React.FC = () => {
+const RegisterPatients: React.FC = () => {
   const [newPatient, setNewPatient] = useState<Patient>({
     name: "",
     email: "",
@@ -61,4 +61,4 @@ const RegisterPatient: React.FC = () => {
   );
 };
 
-export default RegisterPatient;
+export default RegisterPatients;

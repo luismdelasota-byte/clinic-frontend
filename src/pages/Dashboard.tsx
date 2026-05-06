@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Dashboard.css";
+import { getAllDoctors } from "../services/doctorService";
+
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const userRole = localStorage.getItem("role");
+  const [doctorCount, setDoctorCount] = useState<number>(0);
+
 
   const [openPatients, setOpenPatients] = useState(false);
 
@@ -12,6 +16,14 @@ const Dashboard: React.FC = () => {
     localStorage.clear();
     navigate("/");
   };
+
+  useEffect(() => {
+  const loadDoctors = async () => {
+    const data = await getAllDoctors();
+      setDoctorCount(data.length);
+    };
+    loadDoctors();
+  }, []);
 
   return (
     <div className="dashboard-layout">
@@ -24,13 +36,14 @@ const Dashboard: React.FC = () => {
             {openPatients && (
               <ul className="submenu">
                 <li onClick={() => navigate("/patients/register")}>Registrar</li>
-                <li onClick={() => navigate("/patients/citas")}>Citas</li>
               </ul>
             )}
           </li>
           <li onClick={() => navigate("/doctors")}>Doctores</li>
           <li onClick={handleLogout}>Cerrar sesión</li>
         </ul>
+        {/* Imagen en la barra lateral */}
+        <div className="sidebar-image"></div>
       </aside>
       {/* Main content o contenido principal */}
       <main className="dashboard-main">
@@ -57,7 +70,7 @@ const Dashboard: React.FC = () => {
               </div>
               <div className="card" onClick={() => navigate("/doctors")} >
                 <h4>Gestionar Doctores</h4>
-                <p>4 médicos activos</p>
+                <p>{doctorCount} médicos activos</p>
               </div>
               <div className="card" onClick={() => navigate("/schedule")}>
                 <h4>Horario Doctores</h4>
@@ -69,21 +82,17 @@ const Dashboard: React.FC = () => {
 
         {userRole === "USER" && (
           <section className="user-section">
-            <h3>USER - Área del Cajero</h3>
+            <h3>USER</h3>
             <div className="cards">
-              <div className="card">
+              <div className="card" onClick={() => navigate("/appointments")}>
                 <h4>Agendar Cita</h4>
                 <p>Registrar nueva cita</p>
               </div>
-              <div className="card">
-                <h4>Reprogramar Cita</h4>
-                <p>Modificar citas existentes</p>
+              <div className="card" onClick={() => navigate("/patients")}>
+                <h4>Registrar Paciente</h4>
+                <p>Crear nuevos pacientes</p>
               </div>
-              <div className="card">
-                <h4>Ver Historial Clínico</h4>
-                <p>Acceso rápido a historial</p>
-              </div>
-              <div className="card">
+              <div className="card" onClick={ () => navigate("/schedule")}>
                 <h4>Horario Doctores</h4>
                 <p>Consultar disponibilidad</p>
               </div>
