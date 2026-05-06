@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getAllDoctors, saveDoctor, deleteDoctor } from "../../services/doctorService";
+import "../../styles/doctors.css";
 
 interface Doctor {
   id?: number;
@@ -19,6 +20,10 @@ const ManageDoctors: React.FC = () => {
     email: "",
     phone: ""
   });
+
+  // Paginación
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   useEffect(() => {
     loadDoctors();
@@ -44,12 +49,18 @@ const ManageDoctors: React.FC = () => {
     loadDoctors();
   };
 
-  return (
-    <div style={{ padding: "20px" }}>
-      <h2>Gestionar Doctores</h2>
+  // Calcular doctores visibles
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentDoctors = doctors.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(doctors.length / itemsPerPage);
 
-      {/* Formulario para crear doctor */}
-      <div style={{ marginBottom: "20px" }}>
+  return (
+    <div className="container">
+      <h2>Panel Médico: Gestión de Doctores</h2>
+
+      {/* Formulario */}
+      <div className="form-row">
         <input
           type="text"
           placeholder="CMP"
@@ -83,16 +94,43 @@ const ManageDoctors: React.FC = () => {
         <button onClick={handleSave}>Registrar Doctor</button>
       </div>
 
-      {/* Lista de doctores */}
-      <h3>Lista de Doctores</h3>
-      <ul>
-        {doctors.map((d) => (
-          <li key={d.id}>
-            CMP: {d.cmp} | {d.name} - {d.speciality} | {d.email} | {d.phone}
-            <button onClick={() => handleDelete(d.id!)}>Eliminar</button>
-          </li>
-        ))}
-      </ul>
+      {/* Lista */}
+      <div className="list">
+        <h3>Lista de Doctores</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>CMP</th>
+              <th>Nombre</th>
+              <th>Especialidad</th>
+              <th>Email</th>
+              <th>Teléfono</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {currentDoctors.map((d) => (
+              <tr key={d.id}>
+                <td>{d.cmp}</td>
+                <td>{d.name}</td>
+                <td>{d.speciality}</td>
+                <td>{d.email}</td>
+                <td>{d.phone}</td>
+                <td className="actions">
+                  <button className="delete" onClick={() => handleDelete(d.id!)}>Eliminar</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        {/* Paginación */}
+        <div className="pagination">
+          <button disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}>◀</button>
+          <span>Página {currentPage} de {totalPages}</span>
+          <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}>▶</button>
+        </div>
+      </div>
     </div>
   );
 };

@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Dashboard.css";
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const userRole = localStorage.getItem("role");
+
+  const [openPatients, setOpenPatients] = useState(false);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -13,19 +15,23 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="dashboard-layout">
-      {/* Sidebar o barra lateral(navegacion) */}
+      {/* Sidebar o barra lateral(navegacion)*/}
       <aside className="sidebar">
         <h2>Clínica San Luis</h2>
         <ul>
-          <li>Panel</li>
-          <li>Pacientes</li>
-          <li>Doctores</li>
-          <li>Reportes</li>
-          <li>Schedule</li>
-          <li onClick={handleLogout}>Cerrar sesión 🚪</li>
+          <li onClick={() => setOpenPatients(!openPatients)}>
+            Pacientes
+            {openPatients && (
+              <ul className="submenu">
+                <li onClick={() => navigate("/patients/register")}>Registrar</li>
+                <li onClick={() => navigate("/patients/citas")}>Citas</li>
+              </ul>
+            )}
+          </li>
+          <li onClick={() => navigate("/doctors")}>Doctores</li>
+          <li onClick={handleLogout}>Cerrar sesión</li>
         </ul>
       </aside>
-
       {/* Main content o contenido principal */}
       <main className="dashboard-main">
         <header className="dashboard-header">
@@ -44,7 +50,6 @@ const Dashboard: React.FC = () => {
               <div className="card" onClick={() => navigate("/patients")}>
                 <h4>Gestionar Pacientes</h4>
                 <p>Ver y editar registros de pacientes</p>
-                <span>98% completado</span>
               </div>
               <div className="card" onClick={() => navigate("/appointments")}>
                 <h4>Gestionar Citas</h4>

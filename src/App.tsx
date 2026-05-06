@@ -8,6 +8,8 @@ import ManagePatients from "./pages/patients/ManagePatients";
 import ManageSchedule from "./pages/schedules/ManageSchedule";
 import ManageDoctors from "./pages/doctors/ManageDoctors";
 import ManageAppointments from "./pages/appointments/ManageAppointments";
+import RegisterPatient from "./pages/patients/RegisterPatients";
+import PatientAppointments from "./pages/patients/PatientAppointments";
 
 const App: React.FC = () => {
   return (
@@ -15,12 +17,14 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<RoleSelection />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/dashboard" element={<Dashboard />}/>
+        <Route path="/register" element={<Register />}/>
         <Route path="/patients" element = {<ManagePatients/>}/>
+        <Route path="/patients/register" element={<RegisterPatient/>} />
+        <Route path="/patients/citas" element={<PatientAppointments />} />
         <Route path="/doctors" element = {<ManageDoctors/>}/>
-        <Route path="/schedule" element = {<ManageSchedule/>} />
-        <Route path="/appointments" element = {<ManageAppointments/>} />
+        <Route path="/schedule" element = {<ManageSchedule/>}/>
+        <Route path="/appointments" element = {<ManageAppointments/>}/>
       </Routes>
     </Router>
   );

@@ -1,0 +1,119 @@
+/* ====== Panel Médico: Gestión de Citas ====== */
+
+.container {
+  max-width: 1100px;
+  margin: 30px auto;
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  font-family: 'Inter', sans-serif;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Encabezado */
+.container h2 {
+  background-color: #004aad;
+  color: white;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+/* Formulario */
+.container .form-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.container .form-row input,
+.container .form-row select {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.container .form-row button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.container .form-row button:hover {
+  background-color: #218838;
+}
+
+/* Lista y tabla */
+.container .list {
+  margin-top: 20px;
+}
+
+.container .list h3 {
+  color: #004aad;
+  margin-bottom: 10px;
+}
+
+.container .list table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.container .list th {
+  background-color: #004aad;
+  color: white;
+  padding: 10px;
+  text-align: left;
+}
+
+.container .list td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.container .list tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+/* Botones de acción */
+.container .actions .delete {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.container .actions .delete:hover {
+  background-color: #c82333;
+}
+
+.container .pagination {
+  margin-top: 10px;
+  text-align: center;
+  color: #555;
+  font-size: 14px;
+}
+
+.container .pagination button {
+  background-color: #004aad;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  margin: 0 5px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.container .pagination button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+

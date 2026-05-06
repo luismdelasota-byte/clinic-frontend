@@ -1,6 +1,6 @@
 import api from "./api.ts";
 
-//Obtener todos los doctores
+//Obtener todas las citas
 export const getAllAppointments = async () => {
     const response = await api.get("/api/appointments");
     return response.data;
@@ -22,3 +22,9 @@ export const getAllAppointmentById = async (id:number) => {
 export const deleteAppointment = async (id:number) => {
     await api.delete(`/api/appointments/${id}`);
 }
+
+//Obtener citas por paciente
+export const getAppointmentsByPatient = async (patientId: number) => {
+    const response = await api.get(`/api/appointments/patient/${patientId}`);
+    return response.data;
+};

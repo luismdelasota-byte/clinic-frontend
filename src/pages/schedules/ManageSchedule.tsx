@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getAllSchedules, saveSchedule, deleteSchedule } from "../../services/scheduleService";
-import api from "../../services/api"; // tu instancia axios
+import api from "../../services/api";
+import "../../styles/schedule.css";
 
 interface Schedule {
   id?: number;
@@ -13,12 +14,12 @@ interface Schedule {
 const ManageSchedule: React.FC = () => {
   const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [doctors, setDoctors] = useState<any[]>([]);
-  const [newSchedule, setNewSchedule] = useState<Schedule>({
-    doctor: { id: 0, name: "" },
-    dayOfWeek: "",
-    startTime: "",
-    endTime: ""
-  });
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editData, setEditData] = useState<Schedule | null>(null);
+
+  // Paginación
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   useEffect(() => {
     loadSchedules();
@@ -36,9 +37,12 @@ const ManageSchedule: React.FC = () => {
   };
 
   const handleSave = async () => {
-    await saveSchedule(newSchedule);
-    setNewSchedule({ doctor: { id: 0, name: "" }, dayOfWeek: "", startTime: "", endTime: "" });
-    loadSchedules();
+    if (editData) {
+      await saveSchedule(editData);
+      setEditingId(null);
+      setEditData(null);
+      loadSchedules();
+    }
   };
 
   const handleDelete = async (id: number) => {
@@ -46,53 +50,105 @@ const ManageSchedule: React.FC = () => {
     loadSchedules();
   };
 
+  const handleEdit = (schedule: Schedule) => {
+    setEditingId(schedule.id!);
+    setEditData({ ...schedule });
+  };
+
+  const handleCancel = () => {
+    setEditingId(null);
+    setEditData(null);
+  };
+
+  // Paginación
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentSchedules = schedules.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(schedules.length / itemsPerPage);
+
   return (
-    <div>
-      <h2>Horario de Doctores</h2>
+    <div className="container">
+      <h2>Panel Médico: Horario de Doctores</h2>
 
-      {/* Formulario para registrar horario */}
-      <select
-        value={newSchedule.doctor.id}
-        onChange={(e) =>
-          setNewSchedule({ ...newSchedule, doctor: { id: Number(e.target.value), name: "" } })
-        }
-      >
-        <option value="">Seleccione un doctor</option>
-        {doctors.map((doc) => (
-          <option key={doc.id} value={doc.id}>
-            {doc.name}
-          </option>
-        ))}
-      </select>
+      <div className="list">
+        <h3>Lista de Horarios Registrados</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Doctor</th>
+              <th>Día</th>
+              <th>Inicio</th>
+              <th>Fin</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {currentSchedules.map((s) => (
+              <tr key={s.id}>
+                {editingId === s.id ? (
+                  <>
+                    <td>
+                      <select
+                        value={editData?.doctor.id}
+                        onChange={(e) =>
+                          setEditData({ ...editData!, doctor: { id: Number(e.target.value), name: "" } })
+                        }
+                      >
+                        {doctors.map((doc) => (
+                          <option key={doc.id} value={doc.id}>{doc.name}</option>
+                        ))}
+                      </select>
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        value={editData?.dayOfWeek}
+                        onChange={(e) => setEditData({ ...editData!, dayOfWeek: e.target.value })}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="time"
+                        value={editData?.startTime}
+                        onChange={(e) => setEditData({ ...editData!, startTime: e.target.value })}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="time"
+                        value={editData?.endTime}
+                        onChange={(e) => setEditData({ ...editData!, endTime: e.target.value })}
+                      />
+                    </td>
+                    <td className="actions">
+                      <button className="edit" onClick={handleSave}>Guardar</button>
+                      <button className="delete" onClick={handleCancel}>Cancelar</button>
+                    </td>
+                  </>
+                ) : (
+                  <>
+                    <td>{s.doctor.name}</td>
+                    <td>{s.dayOfWeek}</td>
+                    <td>{s.startTime}</td>
+                    <td>{s.endTime}</td>
+                    <td className="actions">
+                      <button className="edit" onClick={() => handleEdit(s)}>Editar</button>
+                      <button className="delete" onClick={() => handleDelete(s.id!)}>Eliminar</button>
+                    </td>
+                  </>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
 
-      <input
-        type="text"
-        placeholder="Introduzca el día"
-        value={newSchedule.dayOfWeek}
-        onChange={(e) => setNewSchedule({ ...newSchedule, dayOfWeek: e.target.value })}
-      />
-      <input
-        type="time"
-        value={newSchedule.startTime}
-        onChange={(e) => setNewSchedule({ ...newSchedule, startTime: e.target.value })}
-      />
-      <input
-        type="time"
-        value={newSchedule.endTime}
-        onChange={(e) => setNewSchedule({ ...newSchedule, endTime: e.target.value })}
-      />
-      <button onClick={handleSave}>Registrar Horario</button>
-
-      {/* Lista de horarios registrados */}
-      <h3>Lista de Horarios Registrados</h3>
-      <ul>
-        {schedules.map((s) => (
-          <li key={s.id}>
-            {s.doctor.name} atiende el {s.dayOfWeek} de {s.startTime} a {s.endTime}
-            <button onClick={() => handleDelete(s.id!)}>Eliminar</button>
-          </li>
-        ))}
-      </ul>
+        {/* Paginación */}
+        <div className="pagination">
+          <button disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}>◀</button>
+          <span>Página {currentPage} de {totalPages}</span>
+          <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}>▶</button>
+        </div>
+      </div>
     </div>
   );
 };

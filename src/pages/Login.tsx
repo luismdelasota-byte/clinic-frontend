@@ -24,9 +24,11 @@ const Login: React.FC = () => {
     const realRole = response.data.role;
     const selectedRole = localStorage.getItem("selectedRole");
 
-    localStorage.clear();
+    localStorage.removeItem("selectedRole");
     localStorage.setItem("token", response.data.token);
     localStorage.setItem("role", realRole);
+
+
 
     if (selectedRole && selectedRole !== realRole) {
       alert(
@@ -80,3 +82,4 @@ const Login: React.FC = () => {
 };
 
 export default Login;
+
