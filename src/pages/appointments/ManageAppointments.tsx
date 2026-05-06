@@ -76,63 +76,65 @@ const ManageAppointments: React.FC = () => {
   const totalPages = Math.ceil(appointments.length / itemsPerPage);
 
   return (
-    <div className="container">
-      <h2>Panel Médico: Gestión de Citas</h2>
+    <div className="appointment-page">
+      <div className="container">
+        <h2>Gestión de Citas</h2>
 
-      {/* Formulario */}
-      <div className="form-row">
-        <select value={newAppointment.patientId} onChange={(e) => setNewAppointment({ ...newAppointment, patientId: Number(e.target.value) })}>
-          <option value="">Seleccione un paciente</option>
-          {patients.map((p) => (
-            <option key={p.id} value={p.id}>{p.name}</option>
-          ))}
-        </select>
-
-        <select value={newAppointment.doctorId} onChange={(e) => setNewAppointment({ ...newAppointment, doctorId: Number(e.target.value) })}>
-          <option value="">Seleccione un doctor</option>
-          {doctors.map((d) => (
-            <option key={d.id} value={d.id}>{d.name}</option>
-          ))}
-        </select>
-
-        <input type="date" value={newAppointment.date} onChange={(e) => setNewAppointment({ ...newAppointment, date: e.target.value })} />
-        <input type="time" value={newAppointment.time} onChange={(e) => setNewAppointment({ ...newAppointment, time: e.target.value })} />
-        <button onClick={handleSave}>Agendar Cita</button>
-      </div>
-
-      {/* Lista */}
-      <div className="list">
-        <h3>Lista de Citas</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Paciente</th>
-              <th>Doctor</th>
-              <th>Fecha</th>
-              <th>Estado</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentAppointments.map((a) => (
-              <tr key={a.id}>
-                <td>{a.patient.name}</td>
-                <td>{a.doctor.name}</td>
-                <td>{a.appointmentDate.replace("T", " ")}</td>
-                <td>{a.status}</td>
-                <td className="actions">
-                  <button className="delete" onClick={() => handleDelete(a.id!)}>Cancelar</button>
-                </td>
-              </tr>
+        {/* Formulario */}
+        <div className="form-row">
+          <select value={newAppointment.patientId} onChange={(e) => setNewAppointment({ ...newAppointment, patientId: Number(e.target.value) })}>
+            <option value="">Seleccione un paciente</option>
+            {patients.map((p) => (
+              <option key={p.id} value={p.id}>{p.name}</option>
             ))}
-          </tbody>
-        </table>
+          </select>
 
-        {/* Paginación */}
-        <div className="pagination">
-          <button disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}>◀</button>
-          <span>Página {currentPage} de {totalPages}</span>
-          <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}>▶</button>
+          <select value={newAppointment.doctorId} onChange={(e) => setNewAppointment({ ...newAppointment, doctorId: Number(e.target.value) })}>
+            <option value="">Seleccione un doctor</option>
+            {doctors.map((d) => (
+              <option key={d.id} value={d.id}>{d.name}</option>
+            ))}
+          </select>
+
+          <input type="date" value={newAppointment.date} onChange={(e) => setNewAppointment({ ...newAppointment, date: e.target.value })} />
+          <input type="time" value={newAppointment.time} onChange={(e) => setNewAppointment({ ...newAppointment, time: e.target.value })} />
+          <button onClick={handleSave}>Agendar Cita</button>
+        </div>
+
+        {/* Lista */}
+        <div className="list">
+          <h3>Lista de Citas</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Paciente</th>
+                <th>Doctor</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentAppointments.map((a) => (
+                <tr key={a.id}>
+                  <td>{a.patient.name}</td>
+                  <td>{a.doctor.name}</td>
+                  <td>{a.appointmentDate.replace("T", " ")}</td>
+                  <td>{a.status}</td>
+                  <td className="actions">
+                    <button className="delete" onClick={() => handleDelete(a.id!)}>Cancelar</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          {/* Paginación */}
+          <div className="pagination">
+            <button disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}>◀</button>
+            <span>Página {currentPage} de {totalPages}</span>
+            <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}>▶</button>
+          </div>
         </div>
       </div>
     </div>

@@ -137,3 +137,19 @@
   cursor: pointer;
   padding: 5px 0;
 }
+
+.sidebar-image {
+  margin-top: 20px;
+  height: 600px; 
+  background: url("../assets/admin.jpg") no-repeat center center;
+  background-size: cover;
+  border-radius: 8px;
+}
+
+.dashboard-page {
+  background: #e0f7fa; 
+  min-height: 100vh;   
+  padding: 30px;
+  border-radius: 12px;
+}
+

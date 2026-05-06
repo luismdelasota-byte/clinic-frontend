@@ -127,3 +127,10 @@
   color: #555;
   font-size: 14px;
 }
+
+.patients-page {
+  background: #e0f7fa; 
+  min-height: 100vh;   
+  padding: 30px;
+  border-radius: 12px;
+}

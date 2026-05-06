@@ -34,3 +34,9 @@ export const getDoctorById = async (id:number) => {
 export const deleteDoctor = async (id:number) => {
     await api.delete(`/api/doctors/${id}`);
 }
+
+//Actualizar doctor
+export const updateDoctor = async (id: number, doctor: any) => {
+  const response = await api.put(`/api/doctors/${id}`, doctor);
+  return response.data;
+};
