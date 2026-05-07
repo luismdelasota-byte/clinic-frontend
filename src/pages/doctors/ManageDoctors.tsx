@@ -20,10 +20,12 @@ const ManageDoctors: React.FC = () => {
     email: "",
     phone: ""
   });
+  
 
   //Actualizar doctor
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editedDoctor, setEditedDoctor] = useState<Doctor | null>(null);
+
 
   // Paginación
   const [currentPage, setCurrentPage] = useState(1);
@@ -122,114 +124,73 @@ const ManageDoctors: React.FC = () => {
             <tbody>
               {currentDoctors.map((d) => (
                 <tr key={d.id}>
-                  <td>
-                    {editingId === d.id ? (
-                      <input
-                        value={editedDoctor?.cmp || ""}
-                        onChange={(e) =>
-                          setEditedDoctor({ ...editedDoctor!, cmp: Number(e.target.value) })
-                        }
-                      />
-                    ) : (
-                      d.cmp
-                    )}
-                  </td>
-                  <td>
-                    {editingId === d.id ? (
-                      <input
-                        value={editedDoctor?.name || ""}
-                        onChange={(e) =>
-                          setEditedDoctor({ ...editedDoctor!, name: e.target.value })
-                        }
-                      />
-                    ) : (
-                      d.name
-                    )}
-                  </td>
-                  <td>
-                    {editingId === d.id ? (
-                      <input
-                        value={editedDoctor?.speciality || ""}
-                        onChange={(e) =>
-                          setEditedDoctor({ ...editedDoctor!, speciality: e.target.value })
-                        }
-                      />
-                    ) : (
-                      d.speciality
-                    )}
-                  </td>
-                  <td>
-                    {editingId === d.id ? (
-                      <input
-                        value={editedDoctor?.email || ""}
-                        onChange={(e) =>
-                          setEditedDoctor({ ...editedDoctor!, email: e.target.value })
-                        }
-                      />
-                    ) : (
-                      d.email
-                    )}
-                  </td>
-                  <td>
-                    {editingId === d.id ? (
-                      <input
-                        value={editedDoctor?.phone || ""}
-                        onChange={(e) =>
-                          setEditedDoctor({ ...editedDoctor!, phone: e.target.value })
-                        }
-                      />
-                    ) : (
-                      d.phone
-                    )}
-                  </td>
+                  <td>{editingId === d.id ? (
+                    <input
+                      value={editedDoctor?.cmp || ""}
+                      onChange={(e) =>
+                        setEditedDoctor({ ...editedDoctor!, cmp: Number(e.target.value) })
+                      }
+                    />
+                  ) : d.cmp}</td>
+                  <td>{editingId === d.id ? (
+                    <input
+                      value={editedDoctor?.name || ""}
+                      onChange={(e) =>
+                        setEditedDoctor({ ...editedDoctor!, name: e.target.value })
+                      }
+                    />
+                  ) : d.name}</td>
+                  <td>{editingId === d.id ? (
+                    <input
+                      value={editedDoctor?.speciality || ""}
+                      onChange={(e) =>
+                        setEditedDoctor({ ...editedDoctor!, speciality: e.target.value })
+                      }
+                    />
+                  ) : d.speciality}</td>
+                  <td>{editingId === d.id ? (
+                    <input
+                      value={editedDoctor?.email || ""}
+                      onChange={(e) =>
+                        setEditedDoctor({ ...editedDoctor!, email: e.target.value })
+                      }
+                    />
+                  ) : d.email}</td>
+                  <td>{editingId === d.id ? (
+                    <input
+                      value={editedDoctor?.phone || ""}
+                      onChange={(e) =>
+                        setEditedDoctor({ ...editedDoctor!, phone: e.target.value })
+                      }
+                    />
+                  ) : d.phone}</td>
                   <td className="actions">
                     {editingId === d.id ? (
                       <>
-                        <button
-                          className="save"
-                          onClick={async () => {
-                            if (!editedDoctor) return;
-                            await handleUpdate(d.id!, editedDoctor);
-                            setEditingId(null);
-                            setEditedDoctor(null);
-                          }}
-                        >
-                          Guardar
-                        </button>
-                        <button
-                          className="cancel"
-                          onClick={() => {
-                            setEditingId(null);
-                            setEditedDoctor(null);
-                          }}
-                        >
-                          Cancelar
-                        </button>
+                        <button className="save" onClick={async () => {
+                          if (!editedDoctor) return;
+                          await handleUpdate(d.id!, editedDoctor);
+                          setEditingId(null);
+                          setEditedDoctor(null);
+                        }}>Guardar</button>
+                        <button className="cancel" onClick={() => {
+                          setEditingId(null);
+                          setEditedDoctor(null);
+                        }}>Cancelar</button>
                       </>
                     ) : (
                       <>
-                        <button
-                          className="edit"
-                          onClick={() => {
-                            setEditingId(d.id!);
-                            setEditedDoctor({ ...d });
-                          }}
-                        >
-                          Editar
-                        </button>
-                        <button
-                          className="delete"
-                          onClick={() => handleDelete(d.id!)}
-                        >
-                          Eliminar
-                        </button>
+                        <button className="edit" onClick={() => {
+                          setEditingId(d.id!);
+                          setEditedDoctor({ ...d });
+                        }}>Editar</button>
+                        <button className="delete" onClick={() => handleDelete(d.id!)}>Eliminar</button>
                       </>
                     )}
                   </td>
                 </tr>
               ))}
             </tbody>
-
           </table>
 
           {/* Paginación */}
@@ -242,6 +203,6 @@ const ManageDoctors: React.FC = () => {
       </div>
     </div>
   );
-};
+}
 
 export default ManageDoctors;

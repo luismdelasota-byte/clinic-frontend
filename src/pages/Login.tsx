@@ -21,14 +21,17 @@ const Login: React.FC = () => {
       password,
     });
 
-    const realRole = response.data.role;
+    const realRole = response.data.role.toUpperCase();
     const selectedRole = localStorage.getItem("selectedRole");
 
     localStorage.removeItem("selectedRole");
     localStorage.setItem("token", response.data.token);
     localStorage.setItem("role", realRole);
 
-
+    //guardar doctorId si el rol es DOCTOR
+    if (realRole === "DOCTOR" && response.data.doctorId) {
+      localStorage.setItem("doctorId", response.data.doctorId);
+    }
 
     if (selectedRole && selectedRole !== realRole) {
       alert(

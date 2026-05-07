@@ -28,3 +28,14 @@ export const getAppointmentsByPatient = async (patientId: number) => {
     const response = await api.get(`/api/appointments/patient/${patientId}`);
     return response.data;
 };
+
+export const getAppointmentsByDoctor = async (doctorId: number) => {
+  try {
+    const response = await api.get(`/api/appointments/doctor/${doctorId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener citas del doctor", error);
+    throw error;
+  }
+};
+

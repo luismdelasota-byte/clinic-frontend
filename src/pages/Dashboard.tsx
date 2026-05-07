@@ -8,15 +8,7 @@ const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const userRole = localStorage.getItem("role");
   const [doctorCount, setDoctorCount] = useState<number>(0);
-
-
-  const [openPatients, setOpenPatients] = useState(false);
-
-  const handleLogout = () => {
-    localStorage.clear();
-    navigate("/");
-  };
-
+  
   useEffect(() => {
   const loadDoctors = async () => {
     const data = await getAllDoctors();
@@ -27,24 +19,6 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="dashboard-layout">
-      {/* Sidebar o barra lateral(navegacion)*/}
-      <aside className="sidebar">
-        <h2>Clínica San Luis</h2>
-        <ul>
-          <li onClick={() => setOpenPatients(!openPatients)}>
-            Pacientes
-            {openPatients && (
-              <ul className="submenu">
-                <li onClick={() => navigate("/patients/register")}>Registrar</li>
-              </ul>
-            )}
-          </li>
-          <li onClick={() => navigate("/doctors")}>Doctores</li>
-          <li onClick={handleLogout}>Cerrar sesión</li>
-        </ul>
-        {/* Imagen en la barra lateral */}
-        <div className="sidebar-image"></div>
-      </aside>
       {/* Main content o contenido principal */}
       <main className="dashboard-main">
         <header className="dashboard-header">
@@ -80,9 +54,9 @@ const Dashboard: React.FC = () => {
           </section>
         )}
 
-        {userRole === "USER" && (
+        {userRole === "DOCTOR" && (
           <section className="user-section">
-            <h3>USER</h3>
+            <h3>DOCTOR - Panel de control</h3>
             <div className="cards">
               <div className="card" onClick={() => navigate("/appointments")}>
                 <h4>Agendar Cita</h4>
@@ -99,27 +73,6 @@ const Dashboard: React.FC = () => {
             </div>
           </section>
         )}
-
-        {userRole === "DOCTOR" && (
-          <section className="doctor-section">
-            <h3>DOCTOR - Área del Médico</h3>
-            <div className="cards">
-              <div className="card">
-                <h4>Mis Pacientes</h4>
-                <p>Lista de pacientes asignados</p>
-              </div>
-              <div className="card">
-                <h4>Mis Citas</h4>
-                <p>Agenda de consultas</p>
-              </div>
-              <div className="card">
-                <h4>Historial Clínico</h4>
-                <p>Acceso a registros médicos</p>
-              </div>
-            </div>
-          </section>
-        )}
-
         {userRole === "PATIENT" && (
           <section className="patient-section">
             <h3>PACIENTE - Mi Espacio</h3>
