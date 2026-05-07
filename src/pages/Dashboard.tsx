@@ -8,7 +8,7 @@ const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const userRole = localStorage.getItem("role");
   const [doctorCount, setDoctorCount] = useState<number>(0);
-  
+
   useEffect(() => {
   const loadDoctors = async () => {
     const data = await getAllDoctors();
@@ -56,7 +56,6 @@ const Dashboard: React.FC = () => {
 
         {userRole === "DOCTOR" && (
           <section className="user-section">
-            <h3>DOCTOR - Panel de control</h3>
             <div className="cards">
               <div className="card" onClick={() => navigate("/appointments")}>
                 <h4>Agendar Cita</h4>
