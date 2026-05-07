@@ -3,15 +3,14 @@ import { useNavigate } from "react-router-dom";
 import "../styles/Dashboard.css";
 import { getAllDoctors } from "../services/doctorService";
 
-
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const userRole = localStorage.getItem("role");
   const [doctorCount, setDoctorCount] = useState<number>(0);
 
   useEffect(() => {
-  const loadDoctors = async () => {
-    const data = await getAllDoctors();
+    const loadDoctors = async () => {
+      const data = await getAllDoctors();
       setDoctorCount(data.length);
     };
     loadDoctors();
@@ -19,7 +18,6 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="dashboard-layout">
-      {/* Main content o contenido principal */}
       <main className="dashboard-main">
         <header className="dashboard-header">
           <h1>Bienvenido al sistema clínico</h1>
@@ -29,7 +27,6 @@ const Dashboard: React.FC = () => {
           </div>
         </header>
 
-        {/* Sección por rol */}
         {userRole === "ADMIN" && (
           <section className="admin-section">
             <h3>ADMIN - Panel de Control</h3>
@@ -42,7 +39,7 @@ const Dashboard: React.FC = () => {
                 <h4>Gestionar Citas</h4>
                 <p>Agendar y/o reprogramar citas</p>
               </div>
-              <div className="card" onClick={() => navigate("/doctors")} >
+              <div className="card" onClick={() => navigate("/doctors")}>
                 <h4>Gestionar Doctores</h4>
                 <p>{doctorCount} médicos activos</p>
               </div>
@@ -55,7 +52,8 @@ const Dashboard: React.FC = () => {
         )}
 
         {userRole === "DOCTOR" && (
-          <section className="user-section">
+          <section className="doctor-section">
+            <h3>DOCTOR - Panel de Control</h3>
             <div className="cards">
               <div className="card" onClick={() => navigate("/appointments")}>
                 <h4>Agendar Cita</h4>
@@ -65,13 +63,14 @@ const Dashboard: React.FC = () => {
                 <h4>Registrar Paciente</h4>
                 <p>Crear nuevos pacientes</p>
               </div>
-              <div className="card" onClick={ () => navigate("/schedule")}>
+              <div className="card" onClick={() => navigate("/schedule")}>
                 <h4>Horario Doctores</h4>
                 <p>Consultar disponibilidad</p>
               </div>
             </div>
           </section>
         )}
+
         {userRole === "PATIENT" && (
           <section className="patient-section">
             <h3>PACIENTE - Mi Espacio</h3>
@@ -92,7 +91,6 @@ const Dashboard: React.FC = () => {
           </section>
         )}
 
-        {/* Actividad reciente */}
         <section className="activity">
           <h3>Resumen de Actividad Reciente</h3>
           <ul>
