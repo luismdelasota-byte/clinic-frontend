@@ -58,7 +58,6 @@ const Register: React.FC = () => {
             <option value="PATIENT">Paciente</option>
             <option value="DOCTOR">Doctor</option>
             <option value="ADMIN">Admin</option>
-            <option value={"USER"}>User</option>
           </select>
           <button type="submit">Registrarse</button>
         </form>

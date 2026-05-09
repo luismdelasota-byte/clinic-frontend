@@ -23,7 +23,7 @@ const RoleSelection: React.FC = () => {
           <p>Panel de control</p>
         </div>
 
-        <div className="role-card user" onClick={() => handleRoleClick("DOCTOR")}>
+        <div className="role-card doctor" onClick={() => handleRoleClick("DOCTOR")}>
           <h3>DOCTOR</h3>
           <p>Área del medico</p>
         </div>

@@ -7,6 +7,7 @@ import { getAllAppointments } from "../services/appointmentService";
 import { getAllSchedules } from "../services/scheduleService";
 import clinicaImg from "../assets/imagen_doctores.jpg";
 
+
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -280,7 +281,7 @@ const Dashboard: React.FC = () => {
           <section className="patient-section">
             <h3>PACIENTE - Mi Espacio</h3>
             <div className="cards">
-              <div className="card"><h4>Mis Citas</h4><p>Ver próximas citas</p></div>
+              <div className="card" onClick={() => navigate("/patient/appointments")}><h4>Mis Citas</h4><p>Ver próximas citas</p></div>
               <div className="card"><h4>Mi Historial Clínico</h4><p>Acceso a tu historial</p></div>
               <div className="card"><h4>Perfil Personal</h4><p>Editar información personal</p></div>
             </div>

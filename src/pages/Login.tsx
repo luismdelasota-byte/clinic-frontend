@@ -33,6 +33,11 @@ const Login: React.FC = () => {
       localStorage.setItem("doctorId", response.data.doctorId);
     }
 
+    //guardar patientId si el rol es PATIENT
+    if(realRole === "PATIENT" && response.data.patientId){
+      localStorage.setItem("patientId", response.data.patientId);
+    }
+
     if (selectedRole && selectedRole !== realRole) {
       alert(
         `Ingresaste como ${selectedRole}, pero tu rol real es ${realRole}. Por favor, vuelve a seleccionar tu rol correcto.`
