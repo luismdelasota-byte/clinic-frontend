@@ -1,0 +1,68 @@
+.doctor-appointments {
+  background-color: #f9fafc;
+  min-height: 100vh;
+  padding: 40px 0;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.container {
+  width: 90%;
+  max-width: 1000px;
+  margin: auto;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  border: 2px solid #0078d4;
+}
+
+h2 {
+  text-align: center;
+  color: #0078d4;
+  margin-bottom: 25px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th {
+  background-color: #0078d4;
+  color: white;
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+}
+
+td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+tr:hover {
+  background-color: #f1f9ff;
+}
+
+.status {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status.SCHEDULED {
+  background-color: #e0f7fa;
+  color: #00796b;
+}
+
+.status.COMPLETED {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status.CANCELLED {
+  background-color: #ffebee;
+  color: #c62828;
+}

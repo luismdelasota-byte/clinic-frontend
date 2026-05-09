@@ -29,6 +29,7 @@ export const getAppointmentsByPatient = async (patientId: number) => {
     return response.data;
 };
 
+//Obtener citas por doctor
 export const getAppointmentsByDoctor = async (doctorId: number) => {
   try {
     const response = await api.get(`/api/appointments/doctor/${doctorId}`);
