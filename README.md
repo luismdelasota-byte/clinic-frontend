@@ -1,7 +1,7 @@
 ## Clínica San Luis - Frontend
 
 Frontend en React + TypeScript para el sistema clínico.  
-Este módulo permite la interacción de distintos roles (ADMIM, USER DOCTOR, PATIENT) con dashboards personalizados y conexión al backend vía API REST, pryecto en crecimiento.
+Este módulo permite la interacción de distintos roles (ADMIM, DOCTOR, PATIENT) con dashboards personalizados y conexión al backend vía API REST, pryecto en crecimiento.
 
 ---
 
@@ -16,14 +16,16 @@ Este módulo permite la interacción de distintos roles (ADMIM, USER DOCTOR, PAT
 ---
 
 ## Estructura del proyecto
-frontend/
-├── public/              # Archivos estáticos
-├── src/
-│   ├── service/api.ts   # Conexión con backend (api.ts)
-│   |── assets/          # Imagenes
-|   ├── pages/           # Pantallas principales (Login, Dashboard, etc.)
-│   ├── styles/          # Estilos CSS organizados
-│   ├── App.tsx          # Rutas principales
-│   └── main.tsx         # Punto de entrada
-├── package.json
-└── README.md   
+- frontend/
+- ├── public/              # Archivos estáticos
+- ├── src/
+- │   ├── service/api.ts   # Conexión con backend (api.ts)
+- │   |── assets/          # Imagenes
+- |   ├── pages/           # Pantallas principales (Login, Dashboard, etc.)
+- │   ├── styles/          # Estilos CSS organizados
+- │   ├── App.tsx          # Rutas principales
+- │   └── main.tsx         # Punto de entrada
+- ├── package.json
+- └── README.md   
+
+---
