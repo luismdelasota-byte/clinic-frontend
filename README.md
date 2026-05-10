@@ -1,4 +1,4 @@
-## Clínica San Luis - Frontend
+## Frontend - clinicapp
 
 Frontend en React + TypeScript para el sistema clínico.  
 Este módulo permite la interacción de distintos roles (ADMIM, DOCTOR, PATIENT) con dashboards personalizados y conexión al backend vía API REST, pryecto en crecimiento.
