@@ -101,11 +101,6 @@ const Dashboard: React.FC = () => {
     },
   };
 
-  // --- Actividad reciente: últimas 2 citas ---
-  const recentActivity = [...appointments]
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, 2);
-
   // --- Modal de Documentación ---
   const docContent: Record<string, string> = {
     diarioClinico: `Total de citas registradas: ${appointments.length}. Hoy: ${todayAppointments.length}.`,
@@ -162,74 +157,56 @@ const Dashboard: React.FC = () => {
               )}
             </section>
 
-            {/* Actividad reciente con datos reales */}
-            <section className="activity">
-              <h3>Resumen de Actividad Reciente</h3>
-              {loading ? <p>Cargando...</p> : (
-                <ul>
-                  {recentActivity.length > 0
-                    ? recentActivity.map((a, i) => (
-                        <li key={i}>
-                          Cita #{a.id} — {a.patientName ?? "Paciente"} — {a.date} ({a.status})
-                        </li>
-                      ))
-                    : <li>No hay actividad reciente.</li>
-                  }
-                </ul>
-              )}
-            </section>
-
             <section className="admin-indicators">
               <h3>Indicadores Clave del Día</h3>
               <div className="indicators-grid">
-                <div className="chart-and-indicators">
-                  <div className="chart">
-                    <h4>Tendencia de Citas (Últimos 7 Días)</h4>
-                    <Line data={patientTrendData} options={patientTrendOptions} />
-                  </div>
-                  <div className="indicators-with-image">
-                    <div className="indicators-column">
-                      <div className="indicator">
-                        <h4>Citas de Hoy</h4>
-                        {loading
-                          ? <p>Cargando...</p>
-                          : <p>{todayAppointments.length} ({confirmedToday} Confirmadas | {pendingToday} Pendientes)</p>
-                        }
-                      </div>
-                      <div className="indicator">
-                        <h4>Citas Nuevas (Semana)</h4>
-                        {loading ? <p>Cargando...</p> : <p>{newPatientsWeek}</p>}
-                      </div>
-                      <div className="indicator">
-                        <h4>Total Pacientes</h4>
-                        {loading ? <p>Cargando...</p> : <p>{patientCount}</p>}
-                      </div>
-                    </div>
+                {/* Columna 1: Gráfico */}
+                <div className="chart">
+                  <h4>Tendencia de Citas (Últimos 7 Días)</h4>
+                  <Line data={patientTrendData} options={patientTrendOptions} />
+                </div>
 
-                    {/* Documentación interactiva */}
-                    <div className="documentation">
-                      <h2>Documentación</h2>
-                      <ul>
-                        <li>
-                          <button onClick={() => setDocModal({ open: true, type: "diarioClinico" })}>
-                            Diario Clínico
-                          </button>
-                        </li>
-                        <li>
-                          <button onClick={() => setDocModal({ open: true, type: "descansoMedico" })}>
-                            Descanso Médico
-                          </button>
-                        </li>
-                        <li>
-                          <button onClick={() => setDocModal({ open: true, type: "informesMedicos" })}>
-                            Informes Médicos
-                          </button>
-                        </li>
-                      </ul>
-                      <div className="animated-image">
-                        <img src={clinicaImg} alt="Imagen clínica" />
-                      </div>
-                    </div>
+                {/* Columna 2: Indicadores */}
+                <div className="indicators-column">
+                  <div className="indicator">
+                    <h4>Citas de Hoy</h4>
+                    {loading
+                      ? <p>Cargando...</p>
+                      : <p>{todayAppointments.length} ({confirmedToday} Confirmadas | {pendingToday} Pendientes)</p>
+                    }
+                  </div>
+                  <div className="indicator">
+                    <h4>Citas Nuevas (Semana)</h4>
+                    {loading ? <p>Cargando...</p> : <p>{newPatientsWeek}</p>}
+                  </div>
+                  <div className="indicator">
+                    <h4>Total Pacientes</h4>
+                    {loading ? <p>Cargando...</p> : <p>{patientCount}</p>}
+                  </div>
+                </div>
+
+                {/* Columna 3: Documentación */}
+                <div className="documentation">
+                  <h2>Documentación</h2>
+                  <ul>
+                    <li>
+                      <button onClick={() => setDocModal({ open: true, type: "diarioClinico" })}>
+                        Diario Clínico
+                      </button>
+                    </li>
+                    <li>
+                      <button onClick={() => setDocModal({ open: true, type: "descansoMedico" })}>
+                        Descanso Médico
+                      </button>
+                    </li>
+                    <li>
+                      <button onClick={() => setDocModal({ open: true, type: "informesMedicos" })}>
+                        Informes Médicos
+                      </button>
+                    </li>
+                  </ul>
+                  <div className="animated-image">
+                    <img src={clinicaImg} alt="Imagen clínica" />
                   </div>
                 </div>
               </div>
