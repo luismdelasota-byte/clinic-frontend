@@ -21,15 +21,22 @@ const ManageAppointments: React.FC = () => {
     date: "",
     time: ""
   });
+  const [schedules, setSchedules] = useState<any[]>([]);
 
   // Paginación
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
+  const fetchSchedules = async () => {
+    const response = await api.get("/api/schedules");
+    setSchedules(response.data);
+  };
+
   useEffect(() => {
     loadAppointments();
     fetchPatients();
     fetchDoctors();
+    fetchSchedules();
   }, []);
 
   const loadAppointments = async () => {
@@ -46,12 +53,32 @@ const ManageAppointments: React.FC = () => {
     const response = await api.get("/api/doctors");
     setDoctors(response.data);
   };
+  
 
   const handleSave = async () => {
     if (!newAppointment.patientId || !newAppointment.doctorId || !newAppointment.date || !newAppointment.time) {
       alert("Completa todos los campos");
       return;
     }
+
+    // Calcular día de la semana
+    const dayName = new Date(newAppointment.date).toLocaleDateString("es-ES", { weekday: "long" }).toUpperCase();
+
+    // Buscar horario del doctor
+    const doctorSchedule = schedules.find(
+      (s) => s.doctor.id === newAppointment.doctorId && s.dayOfWeek === dayName
+    );
+
+    if (!doctorSchedule) {
+      alert("El doctor fuera de horario.");
+      return;
+    }
+
+    if (newAppointment.time < doctorSchedule.startTime || newAppointment.time > doctorSchedule.endTime) {
+      alert("El doctor fuera de horario.");
+      return;
+    }
+
     const appointmentDate = `${newAppointment.date}T${newAppointment.time}:00`;
     const appointment = {
       patient: { id: newAppointment.patientId },
@@ -59,10 +86,17 @@ const ManageAppointments: React.FC = () => {
       appointmentDate,
       status: "SCHEDULED"
     };
-    await saveAppointment(appointment);
-    setNewAppointment({ patientId: 0, doctorId: 0, date: "", time: "" });
-    loadAppointments();
+
+    try {
+      await saveAppointment(appointment);
+      alert("Cita registrada correctamente");
+      setNewAppointment({ patientId: 0, doctorId: 0, date: "", time: "" });
+      loadAppointments();
+    } catch (error: any) {
+      alert(error.response?.data?.message || "Error al registrar la cita");
+    }
   };
+
 
   const handleDelete = async (id: number) => {
     await deleteAppointment(id);

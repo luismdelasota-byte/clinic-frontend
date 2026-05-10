@@ -15,7 +15,7 @@ const Register: React.FC = () => {
         username,
         email,
         password,
-        role,
+        role: role.toUpperCase(),
       });
       alert("Usuario registrado correctamente");
       console.log(response.data);
