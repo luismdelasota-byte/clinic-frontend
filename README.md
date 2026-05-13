@@ -16,16 +16,25 @@ Este módulo permite la interacción de distintos roles (ADMIM, DOCTOR, PATIENT)
 ---
 
 ## Estructura del proyecto
-- frontend/
-- ├── public/              # Archivos estáticos
+- clinic-frontend/
+- ├── public/               # Archivos estáticos
 - ├── src/
-- │   ├── service/api.ts   # Conexión con backend (api.ts)
-- │   |── assets/          # Imagenes
-- |   ├── pages/           # Pantallas principales (Login, Dashboard, etc.)
-- │   ├── styles/          # Estilos CSS organizados
-- │   ├── App.tsx          # Rutas principales
-- │   └── main.tsx         # Punto de entrada
+- │   ├── service/api.ts    # Conexión con backend (api.ts)
+- │   ├── components/modals # componentes reutilizables
+- │   |── assets/           # Imagenes
+- |   ├── pages/            # Pantallas principales (Login, Dashboard, etc.)
+- │   ├── styles/           # Estilos CSS organizados
+- │   ├── App.tsx           # Rutas principales
+- │   └── main.tsx          # Punto de entrada
 - ├── package.json
 - └── README.md   
+
+
+##  Demo en vivo
+[https://clinic-frontend-sable-six.vercel.app](https://clinic-frontend-sable-six.vercel.app)
+
+El proyecto aún está en desarrollo.  
+Actualmente solo está desplegado el frontend en Vercel.  
+El backend (Spring Boot) se encuentra en proceso de despliegue y será integrado próximamente. 
 
 ---
