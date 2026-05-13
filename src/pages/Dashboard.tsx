@@ -69,9 +69,9 @@ const Dashboard: React.FC = () => {
   const today = new Date().toISOString().split("T")[0];
   const todayAppointments = appointments.filter(a => a.date?.startsWith(today));
 
-  const weekAgo = new Date();
+  /*const weekAgo = new Date();
   weekAgo.setDate(weekAgo.getDate() - 7);
-  const newPatientsWeek = appointments.filter(a => new Date(a.date) >= weekAgo).length;
+  const newPatientsWeek = appointments.filter(a => new Date(a.date) >= weekAgo).length;*/
 
   const days = ["L", "M", "X", "J", "V", "S", "D"];
   const trendData = Array(7).fill(0).map((_, i) => {
@@ -228,6 +228,15 @@ const Dashboard: React.FC = () => {
               ) : (
                 <>
                   <div className="stats-grid">
+                    <div className="stat-card">
+                      <div className="stat-icon-wrapper teal">
+                        <Clock size={24} />
+                      </div>
+                      <div className="stat-info">
+                        <h3>Horarios Registrados</h3>
+                        <p className="stat-value">{scheduleCount}</p>
+                      </div>
+                    </div>
                     <div className="stat-card">
                       <div className="stat-icon-wrapper blue">
                         <Users size={24} />
