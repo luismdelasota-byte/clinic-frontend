@@ -1,62 +1,15 @@
-.manage-doctors-container table {
-  width: 100%;
-  border-collapse: collapse;
-}
+/* Estilos específicos para Doctors */
+/* Reutiliza la mayoría de los estilos de patients.css */
 
-.manage-doctors-container th {
-  background-color: #0a4d8c;
+.doctor-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--primary-light);
   color: white;
-  padding: 10px;
-  text-align: left;
-}
-
-.manage-doctors-container td {
-  padding: 10px;
-  border-bottom: 1px solid #ddd;
-}
-
-.manage-doctors-container tr:nth-child(even) {
-  background-color: #f2f2f2;
-}
-
-.manage-doctors-container .delete-btn {
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.manage-doctors-container .delete-btn:hover {
-  background-color: #c82333;
-}
-
-.container .pagination {
-  margin-top: 10px;
-  text-align: center;
-  color: #555;
-  font-size: 14px;
-}
-
-.container .pagination button {
-  background-color: #004aad;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  margin: 0 5px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.container .pagination button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-.doctor-page {
-  background: #e0f7fa; 
-  min-height: 100vh;   
-  padding: 30px;
-  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1rem;
 }

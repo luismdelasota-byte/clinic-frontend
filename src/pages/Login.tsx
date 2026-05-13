@@ -1,88 +1,150 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { ShieldAlert, User, Lock, ArrowLeft } from "lucide-react";
 import api from "../services/api";
 import "../styles/Login.css";
 
 const Login: React.FC = () => {
   const [usernameOrEmail, setUsernameOrEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   // Rol seleccionado desde la pantalla anterior
   const selectedRole = localStorage.getItem("selectedRole");
-  console.log("Rol seleccionado antes del login:", selectedRole);
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+    e.preventDefault();
+    setErrorMsg(null);
+    setLoading(true);
 
-  try {
-    const response = await api.post("/auth/login", {
-      usernameOrEmail,
-      password,
-    });
+    try {
+      const response = await api.post("/auth/login", {
+        usernameOrEmail,
+        password,
+      });
 
-    const realRole = response.data.role.toUpperCase();
-    const selectedRole = localStorage.getItem("selectedRole");
+      const realRole = response.data.role.toUpperCase();
 
-    localStorage.removeItem("selectedRole");
-    localStorage.setItem("token", response.data.token);
-    localStorage.setItem("role", realRole);
+      if (selectedRole && selectedRole !== realRole) {
+        setErrorMsg("Usted pertenece a otro rol.");
+        setLoading(false);
+        return;
+      }
 
-    //guardar doctorId si el rol es DOCTOR
-    if (realRole === "DOCTOR" && response.data.doctorId) {
-      localStorage.setItem("doctorId", response.data.doctorId);
+      // Si todo está bien
+      localStorage.removeItem("selectedRole");
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("role", realRole);
+
+      //guardar doctorId si el rol es DOCTOR
+      if (realRole === "DOCTOR" && response.data.doctorId) {
+        localStorage.setItem("doctorId", response.data.doctorId);
+      }
+
+      //guardar patientId si el rol es PATIENT
+      if (realRole === "PATIENT" && response.data.patientId) {
+        localStorage.setItem("patientId", response.data.patientId);
+      }
+
+      navigate("/dashboard");
+    } catch (error: any) {
+      if (error.response) {
+        // El servidor respondió con un código de estado fuera del rango 2xx
+        setErrorMsg(`Error: Credenciales incorrectas. (Status: ${error.response.status})`);
+      } else if (error.request) {
+        // La petición fue hecha pero no se recibió respuesta (ej. servidor apagado o CORS)
+        setErrorMsg("Error de red: ¿Está encendido tu backend en el puerto 8081? ¿Está configurado CORS?");
+      } else {
+        setErrorMsg("Error desconocido al intentar iniciar sesión.");
+      }
+      console.error("Detalle del error en login:", error);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    //guardar patientId si el rol es PATIENT
-    if(realRole === "PATIENT" && response.data.patientId){
-      localStorage.setItem("patientId", response.data.patientId);
+  const getRoleLabel = () => {
+    switch (selectedRole) {
+      case "ADMIN": return "Administrador";
+      case "DOCTOR": return "Médico";
+      case "PATIENT": return "Paciente";
+      default: return "Usuario";
     }
-
-    if (selectedRole && selectedRole !== realRole) {
-      alert(
-        `Ingresaste como ${selectedRole}, pero tu rol real es ${realRole}. Por favor, vuelve a seleccionar tu rol correcto.`
-      );
-      navigate("/"); // vuelve a la pantalla de selección
-    } else {
-      navigate("/dashboard"); // entra al dashboard si el rol coincide
-    }
-  } catch (error) {
-    alert("Credenciales incorrectas o error en el servidor");
-    console.error("Error en login:", error);
-  }
-};
+  };
 
   return (
-    <div className="login-container">
-      <div className="login-image"></div>
-      <div className="login-form">
-        <div className="login-box">
-          <h2>Inicio de Sesión</h2>
-          {selectedRole && (
-            <p className="selected-role-text">
-              Inicia sesión como <strong>{selectedRole}</strong>
-            </p>
-          )}
-          <form onSubmit={handleSubmit}>
-            <input
-              type="text"
-              placeholder="Usuario o Email"
-              value={usernameOrEmail}
-              onChange={(e) => setUsernameOrEmail(e.target.value)}
-              required
-            />
-            <input
-              type="password"
-              placeholder="Contraseña"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-            <button type="submit">Ingresar</button>
-            <p>
-              ¿No tienes cuenta? <a href="/register">Regístrate aquí</a>
-            </p>
-          </form>
+    <div className="login-wrapper">
+      <div className="login-container animate-fade-in">
+        <div className="login-image-section">
+          <div className="login-overlay">
+            <h2>Bienvenido a Clínica San Luis</h2>
+            <p>Acceso seguro para nuestro personal y pacientes.</p>
+          </div>
+        </div>
+
+        <div className="login-form-section">
+          <button className="back-button" onClick={() => navigate("/")}>
+            <ArrowLeft size={20} />
+            <span>Volver a Roles</span>
+          </button>
+
+          <div className="login-form-content">
+            <div className="login-header">
+              <h2>Iniciar Sesión</h2>
+              {selectedRole && (
+                <div className="role-badge">
+                  Ingresando como: <strong>{getRoleLabel()}</strong>
+                </div>
+              )}
+            </div>
+
+            {errorMsg && (
+              <div className="error-alert animate-fade-in">
+                <ShieldAlert size={20} />
+                <span>{errorMsg}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="login-form">
+              <div className="input-group">
+                <label>Usuario o Email</label>
+                <div className="input-wrapper">
+                  <User size={18} className="input-icon" />
+                  <input
+                    type="text"
+                    placeholder="Ingrese su usuario"
+                    value={usernameOrEmail}
+                    onChange={(e) => setUsernameOrEmail(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="input-group">
+                <label>Contraseña</label>
+                <div className="input-wrapper">
+                  <Lock size={18} className="input-icon" />
+                  <input
+                    type="password"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+
+              <button type="submit" className="btn-primary" disabled={loading}>
+                {loading ? "Ingresando..." : "Ingresar"}
+              </button>
+
+              <div className="register-prompt">
+                <p>¿No tienes cuenta? <Link to="/register">Regístrate aquí</Link></p>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>
@@ -90,4 +152,3 @@ const Login: React.FC = () => {
 };
 
 export default Login;
-
