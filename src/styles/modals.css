@@ -59,11 +59,12 @@
 
 .modal-body {
   flex: 1;
-  padding: 2rem;
+  padding: 2.5rem;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 2rem;
+  background: linear-gradient(to bottom, #FFFFFF, #F8FAFC);
 }
 
 /* Patient Search Section */
@@ -169,11 +170,91 @@
 
 .record-content p {
   color: var(--text-main);
-  line-height: 1.6;
-  background-color: #F8FAFC;
-  padding: 1rem;
+  line-height: 1.7;
+  background-color: white;
+  padding: 1.25rem;
   border-radius: var(--radius-md);
-  border-left: 3px solid var(--primary-color);
+  border: 1px solid #E2E8F0;
+  border-left: 4px solid var(--primary-color);
+  font-size: 0.95rem;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.input-group label {
+  font-weight: 600;
+  color: var(--primary-dark);
+  font-size: 0.9rem;
+}
+
+.input-group textarea, .input-group input {
+  padding: 1rem;
+  border: 1px solid #E2E8F0;
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  transition: all 0.2s;
+  background: white;
+}
+
+.input-group textarea:focus, .input-group input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 4px rgba(15, 82, 186, 0.1);
+  outline: none;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #E2E8F0;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 0.75rem 2rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--primary-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-cancel {
+  background-color: #F1F5F9;
+  color: #64748B;
+  padding: 0.75rem 2rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+}
+
+.btn-cancel:hover {
+  background-color: #E2E8F0;
+  color: #475569;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 600px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
 }
 
 .badge-status {

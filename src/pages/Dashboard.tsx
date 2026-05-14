@@ -84,13 +84,33 @@ const Dashboard: React.FC = () => {
     }
   }, [userRole, doctorId]);
 
-  // --- Notificaciones ---
+  // --- Notificaciones Reales ---
+  const [notifications, setNotifications] = useState<any[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
-  const notifications = [
-    { id: 1, text: "Nueva cita agendada por paciente Pedro Alva", time: "Hace 5 min" },
-    { id: 2, text: "Recordatorio: Cita próxima con Jimena Rios", time: "En 30 min" },
-    { id: 3, text: "Actualización de sistema completada", time: "Hace 2 horas" }
-  ];
+
+  useEffect(() => {
+    if (userRole === "DOCTOR" && doctorId) {
+      const fetchAppts = async () => {
+        try {
+          const appts = await getAllAppointments();
+          const myAppts = appts
+            .filter((a: any) => a.doctor.id === Number(doctorId) && a.status === "SCHEDULED")
+            .sort((a: any, b: any) => new Date(a.appointmentDate).getTime() - new Date(b.appointmentDate).getTime())
+            .slice(0, 3);
+          
+          const notifs = myAppts.map((a: any) => ({
+            id: a.id,
+            text: `Cita próxima con ${a.patient.name}`,
+            time: new Date(a.appointmentDate).toLocaleString('es-ES', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: 'short' })
+          }));
+          setNotifications(notifs);
+        } catch (e) {
+          console.error("Error fetching notifications", e);
+        }
+      };
+      fetchAppts();
+    }
+  }, [userRole, doctorId]);
 
   // --- Indicadores Admin ---
   const today = new Date().toISOString().split("T")[0];
@@ -365,11 +385,11 @@ const Dashboard: React.FC = () => {
               <div className="stats-grid">
                 <div className={`stat-card ${!doctorId ? 'disabled' : ''}`} onClick={() => doctorId && navigate("/doctor/appointments")}>
                   <div className="stat-icon-wrapper blue"><Calendar size={24} /></div>
-                  <div className="stat-info"><h3>Mis Citas</h3><p className="stat-value">Ver Agenda</p></div>
+                  <div className="stat-info"><h3>Mi Agenda</h3><p className="stat-value">Ver Citas</p></div>
                 </div>
-                <div className={`stat-card ${!doctorId ? 'disabled' : ''}`} onClick={() => doctorId && navigate("/patients")}>
-                  <div className="stat-icon-wrapper green"><UserPlus size={24} /></div>
-                  <div className="stat-info"><h3>Registrar Paciente</h3><p className="stat-value">Nuevo</p></div>
+                <div className={`stat-card ${!doctorId ? 'disabled' : ''}`} onClick={() => doctorId && navigate("/doctor/appointments")}>
+                  <div className="stat-icon-wrapper green"><ClipboardList size={24} /></div>
+                  <div className="stat-info"><h3>Continuidad</h3><p className="stat-value">Agendar Seguimiento</p></div>
                 </div>
                 <div className={`stat-card ${!doctorId ? 'disabled' : ''}`} onClick={() => doctorId && navigate("/doctor/schedule")}>
                   <div className="stat-icon-wrapper orange"><Clock size={24} /></div>
