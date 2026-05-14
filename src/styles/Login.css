@@ -132,7 +132,10 @@
 .input-icon {
   position: absolute;
   left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
   color: var(--text-muted);
+  pointer-events: none;
 }
 
 .input-wrapper input {
@@ -145,6 +148,16 @@
   transition: all var(--transition-fast);
   background: #F8FAFC;
 }
+
+.input-icon-right {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
 
 .input-wrapper input:focus {
   outline: none;
@@ -190,11 +203,11 @@
     flex-direction: column;
     min-height: auto;
   }
-  
+
   .login-image-section {
     display: none;
   }
-  
+
   .login-form-section {
     padding: 2rem;
   }
