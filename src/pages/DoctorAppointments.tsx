@@ -191,8 +191,8 @@ const DoctorAppointments: React.FC = () => {
             <button onClick={() => changeMonth(1)}><ChevronRight /></button>
           </div>
           
-          <div className="days-header">
-            <span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span>
+          <div className="days-header" translate="no">
+            <span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span><span>Dom</span>
           </div>
           
           <div className="calendar-grid">

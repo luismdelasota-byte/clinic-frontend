@@ -103,8 +103,8 @@ const DoctorScheduleView: React.FC = () => {
       </header>
 
       <div className="calendar-container animate-fade-in">
-        <div className="calendar-grid">
-          {["LUN", "MAR", "MIE", "JUE", "VIE", "SAB", "DOM"].map(d => (
+        <div className="calendar-grid" translate="no">
+          {["LUN", "MAR", "MIÉ", "JUE", "VIE", "SÁB", "DOM"].map(d => (
             <div key={d} className="calendar-weekday">{d}</div>
           ))}
           {renderCalendar()}
