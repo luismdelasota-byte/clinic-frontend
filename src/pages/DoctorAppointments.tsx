@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAppointmentsByDoctor } from "../services/appointmentService";
-import { Calendar, User, Mail, Clock, ArrowLeft, CheckCircle, AlertCircle, Filter, CalendarDays } from "lucide-react";
+import { 
+  Calendar, Clock, ChevronLeft, ChevronRight, ArrowLeft, 
+  CheckCircle, FileText, ClipboardList, Activity, CalendarDays, Mail, FilePlus
+} from "lucide-react";
 import "../styles/DoctorAppointments.css";
+import { updateAppointmentStatus, getAppointmentsByDoctor } from "../services/appointmentService";
+import ClinicalDiaryModal from "../components/modals/ClinicalDiaryModal";
+import MedicalLeaveModal from "../components/modals/MedicalLeaveModal";
+import MedicalReportModal from "../components/modals/MedicalReportModal";
 
 interface Appointment {
   id: number;
@@ -19,8 +25,13 @@ interface Appointment {
 const DoctorAppointments: React.FC = () => {
   const navigate = useNavigate();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [selectedMonth, setSelectedMonth] = useState<string>(new Date().toISOString().substring(0, 7));
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [loading, setLoading] = useState<boolean>(true);
+  const [modalState, setModalState] = useState<{ open: boolean; type: string | null; appointment: any }>({
+    open: false,
+    type: null,
+    appointment: null
+  });
   const doctorId = localStorage.getItem("doctorId");
 
   useEffect(() => {
@@ -35,10 +46,7 @@ const DoctorAppointments: React.FC = () => {
     setLoading(true);
     try {
       const data = await getAppointmentsByDoctor(Number(doctorId));
-      const sortedData = data.sort((a: Appointment, b: Appointment) => 
-        new Date(b.appointmentDate).getTime() - new Date(a.appointmentDate).getTime()
-      );
-      setAppointments(sortedData);
+      setAppointments(data);
     } catch (err) {
       console.error("Error cargando citas:", err);
     } finally {
@@ -46,35 +54,60 @@ const DoctorAppointments: React.FC = () => {
     }
   };
 
-  const availableMonths = Array.from(new Set(appointments.map(a => a.appointmentDate.substring(0, 7)))).sort().reverse();
-
-  const formatMonthName = (yearMonth: string) => {
-    if (!yearMonth) return "";
-    const [year, month] = yearMonth.split("-");
-    const date = new Date(parseInt(year), parseInt(month) - 1, 1);
-    const monthName = date.toLocaleString('es-ES', { month: 'long' });
-    return `${monthName.charAt(0).toUpperCase() + monthName.slice(1)} ${year}`;
+  // Generar días del mes actual para el selector horizontal
+  const getDaysInMonth = (date: Date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const days = [];
+    const lastDay = new Date(year, month + 1, 0).getDate();
+    
+    for (let i = 1; i <= lastDay; i++) {
+      days.push(new Date(year, month, i));
+    }
+    return days;
   };
 
-  const filteredAppointments = appointments.filter(a => a.appointmentDate.startsWith(selectedMonth));
+  const daysList = getDaysInMonth(selectedDate);
 
-  const upcomingAppointments = filteredAppointments.filter(a => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    return new Date(a.appointmentDate) >= today;
+  const isSameDay = (d1: Date, d2: Date) => {
+    return d1.getDate() === d2.getDate() &&
+           d1.getMonth() === d2.getMonth() &&
+           d1.getFullYear() === d2.getFullYear();
+  };
+
+  const filteredAppointments = appointments.filter(a => {
+    const apptDate = new Date(a.appointmentDate);
+    return isSameDay(apptDate, selectedDate);
   });
 
-  const pastAppointments = filteredAppointments.filter(a => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    return new Date(a.appointmentDate) < today;
-  });
+  const formatDateTime = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return {
+      time: date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
+    };
+  };
 
-  const formatDateTime = (dateString: string) => {
-    const date = new Date(dateString);
-    const day = date.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
-    const time = date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-    return { day, time };
+  const handleStatusChange = async (id: number, newStatus: string) => {
+    try {
+      await updateAppointmentStatus(id, newStatus);
+      loadData();
+    } catch (error) {
+      console.error("Error al cambiar estado:", error);
+    }
+  };
+
+  const openModal = (type: string, appointment: any) => {
+    setModalState({ open: true, type, appointment });
+  };
+
+  const formatMonthTitle = (date: Date) => {
+    const month = date.toLocaleString('es-ES', { month: 'long' });
+    return `${month.charAt(0).toUpperCase() + month.slice(1)} ${date.getFullYear()}`;
+  };
+
+  const changeMonth = (offset: number) => {
+    const newDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth() + offset, 1);
+    setSelectedDate(newDate);
   };
 
   if (loading) {
@@ -93,81 +126,128 @@ const DoctorAppointments: React.FC = () => {
             <CalendarDays className="header-icon" size={32} />
             <h1>Mi Agenda Médica</h1>
           </div>
-          <div className="filter-group">
-            <Filter size={18} />
-            <select value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)}>
-              {availableMonths.length > 0 ? (
-                availableMonths.map(m => <option key={m} value={m}>{formatMonthName(m)}</option>)
-              ) : (
-                <option value={selectedMonth}>{formatMonthName(selectedMonth)}</option>
-              )}
-            </select>
+          
+          <div className="calendar-navigation">
+            <button className="nav-icon-btn" onClick={() => changeMonth(-1)}><ChevronLeft /></button>
+            <span className="month-title">{formatMonthTitle(selectedDate)}</span>
+            <button className="nav-icon-btn" onClick={() => changeMonth(1)}><ChevronRight /></button>
+          </div>
+        </div>
+
+        <div className="days-selector-container">
+          <div className="days-strip">
+            {daysList.map((date, idx) => (
+              <button
+                key={idx}
+                className={`day-item ${isSameDay(date, selectedDate) ? 'active' : ''}`}
+                onClick={() => setSelectedDate(date)}
+              >
+                <span className="day-name">{date.toLocaleString('es-ES', { weekday: 'short' })}</span>
+                <span className="day-number">{date.getDate()}</span>
+              </button>
+            ))}
           </div>
         </div>
       </header>
 
       <div className="appointments-content-area animate-fade-in">
-        {appointments.length === 0 ? (
+        {filteredAppointments.length === 0 ? (
           <div className="empty-state">
             <Calendar size={48} />
-            <p>No tienes citas programadas aún.</p>
+            <p>No hay citas programadas para este día.</p>
           </div>
         ) : (
-          <div className="appointments-sections-grid">
-            
-            <section className="appt-section">
-              <h2 className="section-title text-blue">
-                <AlertCircle size={20} /> Próximas Citas ({upcomingAppointments.length})
-              </h2>
-              <div className="appt-cards-stack">
-                {upcomingAppointments.map(a => {
-                  const { day, time } = formatDateTime(a.appointmentDate);
-                  return (
-                    <div key={a.id} className="appt-card upcoming">
-                      <div className="card-badge pending">Pendiente</div>
-                      <div className="card-row">
-                        <User size={18} /> <strong>{a.patient.name}</strong>
-                      </div>
-                      <div className="card-row">
-                        <Calendar size={16} /> <span>{day}</span>
-                      </div>
-                      <div className="card-row">
-                        <Clock size={16} /> <span>{time} hs</span>
-                      </div>
-                      <div className="card-footer">
-                        <p><Mail size={14} /> {a.patient.email}</p>
-                      </div>
+          <div className="appointments-grid-modern">
+            {filteredAppointments.map(a => {
+              const { time } = formatDateTime(a.appointmentDate);
+              const status = a.status || "PENDING";
+              
+              return (
+                <div key={a.id} className={`appt-card-modern ${status.toLowerCase()}`}>
+                  <div className="card-top">
+                    <span className={`status-badge ${status.toLowerCase()}`}>{status}</span>
+                    <span className="appt-time"><Clock size={16} /> {time} hs</span>
+                  </div>
+                  
+                  <div className="patient-info">
+                    <div className="patient-avatar">
+                      {a.patient.name.charAt(0)}
                     </div>
-                  );
-                })}
-              </div>
-            </section>
-
-            <section className="appt-section">
-              <h2 className="section-title text-green">
-                <CheckCircle size={20} /> Historial / Atendidos ({pastAppointments.length})
-              </h2>
-              <div className="appt-cards-stack">
-                {pastAppointments.map(a => {
-                  const { day} = formatDateTime(a.appointmentDate);
-                  return (
-                    <div key={a.id} className="appt-card past">
-                      <div className="card-badge completed">Atendido</div>
-                      <div className="card-row">
-                        <User size={18} /> <strong>{a.patient.name}</strong>
-                      </div>
-                      <div className="card-row">
-                        <Calendar size={16} /> <span>{day}</span>
-                      </div>
+                    <div className="patient-details">
+                      <h3>{a.patient.name}</h3>
+                      <p><Mail size={14} /> {a.patient.email}</p>
                     </div>
-                  );
-                })}
-              </div>
-            </section>
+                  </div>
 
+                  <div className="card-actions">
+                    {status === "PENDING" || status === "SCHEDULED" ? (
+                      <button 
+                        className="btn-action primary"
+                        onClick={() => handleStatusChange(a.id, "IN_CONSULTATION")}
+                      >
+                        <Activity size={18} /> Entrar a Consultorio
+                      </button>
+                    ) : status === "IN_CONSULTATION" ? (
+                      <>
+                        <button 
+                          className="btn-action success"
+                          onClick={() => handleStatusChange(a.id, "COMPLETED")}
+                        >
+                          <CheckCircle size={18} /> Finalizar Cita
+                        </button>
+                        <div className="medical-docs-actions">
+                          <button title="Ver Historial Clínico" onClick={() => navigate(`/patients/${a.patient.id}/history`)}>
+                            <ClipboardList size={18} />
+                          </button>
+                          <button onClick={() => openModal("diario", a)} title="Diario Clínico">
+                            <FilePlus size={18} />
+                          </button>
+                          <button onClick={() => openModal("informe", a)} title="Informe Médico">
+                            <FileText size={18} />
+                          </button>
+                          <button onClick={() => openModal("descanso", a)} title="Descanso Médico">
+                            <Activity size={18} />
+                          </button>
+                        </div>
+                      </>
+                    ) : (
+                      <span className="completed-label">Cita Finalizada</span>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
+
+      {modalState.open && modalState.type === "diario" && (
+        <ClinicalDiaryModal 
+          isOpen={true} 
+          onClose={() => setModalState({ ...modalState, open: false })}
+          appointmentId={modalState.appointment.id}
+          patientId={modalState.appointment.patient.id}
+          doctorId={Number(doctorId)}
+        />
+      )}
+      {modalState.open && modalState.type === "informe" && (
+        <MedicalReportModal 
+          isOpen={true} 
+          onClose={() => setModalState({ ...modalState, open: false })}
+          appointmentId={modalState.appointment.id}
+          patientId={modalState.appointment.patient.id}
+          doctorId={Number(doctorId)}
+        />
+      )}
+      {modalState.open && modalState.type === "descanso" && (
+        <MedicalLeaveModal 
+          isOpen={true} 
+          onClose={() => setModalState({ ...modalState, open: false })}
+          appointmentId={modalState.appointment.id}
+          patientId={modalState.appointment.patient.id}
+          doctorId={Number(doctorId)}
+        />
+      )}
     </div>
   );
 };

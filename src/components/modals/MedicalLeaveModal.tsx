@@ -1,17 +1,66 @@
 import React, { useState, useEffect } from "react";
-import { X, Search, User, FileText, AlertTriangle, Calendar, FileBadge } from "lucide-react";
+import { X, Search, User, FileBadge } from "lucide-react";
 import { getAllPatients } from "../../services/patientService";
+import { saveMedicalLeave } from "../../services/medicalLeaveService";
 import "../../styles/modals.css";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
+  appointmentId?: number;
+  patientId?: number;
+  doctorId?: number;
 }
 
-const MedicalLeaveModal: React.FC<Props> = ({ isOpen, onClose }) => {
+const MedicalLeaveModal: React.FC<Props> = ({ isOpen, onClose, patientId, doctorId }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [patients, setPatients] = useState<any[]>([]);
   const [selectedPatient, setSelectedPatient] = useState<any | null>(null);
+  const [reason, setReason] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [recommendations, setRecommendations] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      loadData();
+      if (patientId) fetchPatient(patientId);
+    }
+  }, [isOpen, patientId]);
+
+  const fetchPatient = async (pid: number) => {
+    const pts = await getAllPatients();
+    const p = pts.find((pt: any) => pt.id === pid);
+    if (p) setSelectedPatient(p);
+  };
+
+  const handleSave = async () => {
+    if (!reason || !startDate || !endDate) {
+      alert("Por favor completa los campos obligatorios.");
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      await saveMedicalLeave({
+        patient: { id: patientId || selectedPatient.id },
+        doctor: { id: doctorId },
+        reason,
+        startDate,
+        endDate,
+        recommendations,
+        issueDate: new Date().toISOString()
+      });
+      alert("Descanso médico guardado correctamente.");
+      onClose();
+    } catch (error) {
+      console.error("Error saving medical leave:", error);
+      alert("Error al guardar el descanso médico.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -94,43 +143,66 @@ const MedicalLeaveModal: React.FC<Props> = ({ isOpen, onClose }) => {
             )}
           </div>
 
-          {/* Historial de Descansos */}
+          {/* Formulario de Descanso */}
           {selectedPatient ? (
-            <div className="history-feed">
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "1rem" }}>
-                <h3 style={{ display: "flex", alignItems: "center", gap: "8px", margin: 0 }}>
-                  <FileText size={20} color="#00A86B"/> Certificados de Descanso Médico Emitidos
-                </h3>
-                <button className="btn-primary" style={{ backgroundColor: "#00A86B", padding: "0.5rem 1rem" }}>Emitir Nuevo Descanso</button>
-              </div>
-              
-              <div className="record-card animate-fade-in" style={{ borderLeft: "4px solid #00A86B" }}>
-                <div className="record-header">
-                  <div>
-                    <div className="record-title" style={{ color: "#00A86B" }}>Descanso por Incapacidad Temporal</div>
-                    <div className="record-date"><Calendar size={14} /> Emitido el: Hace 3 días</div>
-                  </div>
-                  <span className="badge-status danger">Aún Vigente</span>
+            <div className="modal-form-area">
+              <h3 style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "1rem" }}>
+                <FileBadge size={20} color="#D97706" /> Emitir Descanso Médico
+              </h3>
+
+              <div className="form-content animate-fade-in">
+                <div className="input-group">
+                  <label>Motivo / Diagnóstico</label>
+                  <input 
+                    type="text"
+                    placeholder="Ej. Descanso por COVID-19, Post-operatorio..."
+                    value={reason}
+                    onChange={(e) => setReason(e.target.value)}
+                  />
                 </div>
-                <div className="record-content">
-                  <h4>Especificaciones Médicas (Simulado)</h4>
-                  <p style={{ borderLeftColor: "#00A86B" }}>
-                    Se otorga descanso médico al paciente por un periodo de <strong>05 días naturales</strong> (del 09/05/2026 al 14/05/2026).<br/><br/>
-                    <strong>Motivo:</strong> Cuadro infeccioso respiratorio agudo severo con riesgo de contagio.<br/>
-                    <strong>Indicaciones Adicionales:</strong> El paciente debe permanecer en aislamiento domiciliario estricto. Prohibido realizar esfuerzo físico. Debe regresar a consulta si la fiebre persiste por más de 48 horas tras el inicio del tratamiento con antibióticos.
-                  </p>
-                  
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "1rem", color: "#92400E", backgroundColor: "#FEF3C7", padding: "0.75rem", borderRadius: "8px", fontSize: "0.9rem" }}>
-                    <AlertTriangle size={16} /> <span>Este certificado ha sido firmado digitalmente por el Dr(a). a cargo.</span>
+
+                <div className="form-row">
+                  <div className="input-group">
+                    <label>Fecha Inicio</label>
+                    <input 
+                      type="date"
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                    />
                   </div>
+                  <div className="input-group">
+                    <label>Fecha Fin</label>
+                    <input 
+                      type="date"
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="input-group">
+                  <label>Recomendaciones Adicionales</label>
+                  <textarea 
+                    placeholder="Escribe recomendaciones para el paciente durante su descanso..."
+                    value={recommendations}
+                    onChange={(e) => setRecommendations(e.target.value)}
+                    rows={4}
+                  />
+                </div>
+
+                <div className="modal-actions">
+                  <button className="btn-cancel" onClick={onClose}>Cancelar</button>
+                  <button className="btn-primary" style={{ background: "#D97706" }} onClick={handleSave} disabled={isSaving}>
+                    {isSaving ? "Guardando..." : "Guardar Descanso"}
+                  </button>
                 </div>
               </div>
             </div>
           ) : (
-             <div style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", color: "var(--text-muted)", flexDirection: "column", gap: "10px" }}>
-               <Search size={48} opacity={0.2} />
-               <p>Busca y selecciona un paciente para emitir o ver sus Descansos Médicos.</p>
-             </div>
+            <div style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", color: "var(--text-muted)", flexDirection: "column", gap: "10px" }}>
+              <Search size={48} opacity={0.2} />
+              <p>Busca y selecciona un paciente para emitir un nuevo Descanso Médico.</p>
+            </div>
           )}
 
         </div>

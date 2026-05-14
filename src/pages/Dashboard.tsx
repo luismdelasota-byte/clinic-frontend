@@ -160,7 +160,7 @@ const Dashboard: React.FC = () => {
                 <Users size={20} />
                 <span>Pacientes</span>
               </button>
-              <button className="nav-item" onClick={() => navigate("/schedule")}>
+              <button className="nav-item" onClick={() => navigate("/doctor/schedule")}>
                 <Clock size={20} />
                 <span>Mi Horario</span>
               </button>
@@ -173,11 +173,11 @@ const Dashboard: React.FC = () => {
                 <Calendar size={20} />
                 <span>Mis Citas</span>
               </button>
-              <button className="nav-item">
+              <button className="nav-item" onClick={() => navigate("/patient/history")}>
                 <ClipboardList size={20} />
                 <span>Historial Médico</span>
               </button>
-              <button className="nav-item">
+              <button className="nav-item" onClick={() => navigate("/patient/profile")}>
                 <Settings size={20} />
                 <span>Mi Perfil</span>
               </button>
@@ -321,7 +321,7 @@ const Dashboard: React.FC = () => {
                   <div className="stat-icon-wrapper green"><UserPlus size={24} /></div>
                   <div className="stat-info"><h3>Registrar Paciente</h3><p className="stat-value">Nuevo</p></div>
                 </div>
-                <div className="stat-card" onClick={() => navigate("/schedule")}>
+                <div className="stat-card" onClick={() => navigate("/doctor/schedule")}>
                   <div className="stat-icon-wrapper orange"><Clock size={24} /></div>
                   <div className="stat-info"><h3>Mi Horario</h3><p className="stat-value">Disponibilidad</p></div>
                 </div>
@@ -349,11 +349,11 @@ const Dashboard: React.FC = () => {
                   <div className="stat-icon-wrapper blue"><Calendar size={24} /></div>
                   <div className="stat-info"><h3>Mis Citas</h3><p className="stat-value">Agendar/Ver</p></div>
                 </div>
-                <div className="stat-card">
+                <div className="stat-card" onClick={() => navigate("/patient/history")}>
                   <div className="stat-icon-wrapper green"><ClipboardList size={24} /></div>
                   <div className="stat-info"><h3>Historial Clínico</h3><p className="stat-value">Resultados</p></div>
                 </div>
-                <div className="stat-card">
+                <div className="stat-card" onClick={() => navigate("/patient/profile")}>
                   <div className="stat-icon-wrapper purple"><Settings size={24} /></div>
                   <div className="stat-info"><h3>Mi Perfil</h3><p className="stat-value">Actualizar</p></div>
                 </div>

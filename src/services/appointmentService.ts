@@ -40,3 +40,10 @@ export const getAppointmentsByDoctor = async (doctorId: number) => {
   }
 };
 
+//Actualizar estado de cita
+export const updateAppointmentStatus = async (id: number, status: string) => {
+    const response = await api.patch(`/api/appointments/${id}/status`, status, {
+        headers: { 'Content-Type': 'text/plain' }
+    });
+    return response.data;
+};

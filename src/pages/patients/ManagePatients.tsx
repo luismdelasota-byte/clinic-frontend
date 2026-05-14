@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAllPatients, savePatient, deletePatient, updatePatient } from "../../services/patientService";
-import { ArrowLeft, Search, Plus, Edit2, Trash2, Save, X, Users, Calendar, Phone, Mail } from "lucide-react";
+import { ArrowLeft, Search, Plus, Edit2, Trash2, Save, X, Users, Calendar, Phone, Mail, ClipboardList } from "lucide-react";
 import "../../styles/patients.css";
 
 interface Patient {
@@ -227,6 +227,10 @@ const ManagePatients: React.FC = () => {
                           </div>
                         ) : (
                           <div className="action-buttons">
+                            <button className="btn-icon view-btn" title="Ver Historial"
+                              onClick={() => navigate(`/patients/${p.id}/history`)}>
+                              <ClipboardList size={18} />
+                            </button>
                             <button className="btn-icon edit-btn" title="Editar"
                               onClick={() => { setEditingId(p.id!); setEditedPatient({ ...p }); }}>
                               <Edit2 size={18} />

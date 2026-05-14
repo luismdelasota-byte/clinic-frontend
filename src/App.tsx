@@ -9,8 +9,11 @@ import ManageSchedule from "./pages/schedules/ManageSchedule";
 import ManageDoctors from "./pages/doctors/ManageDoctors";
 import ManageAppointments from "./pages/appointments/ManageAppointments";
 import RegisterPatients from "./pages/patients/RegisterPatients";
-import PatientAppointments from "./pages/patients/PatientAppointments";
 import DoctorAppointments from "./pages/DoctorAppointments";
+import DoctorScheduleView from "./pages/doctors/DoctorScheduleView";
+import PatientAppointments from "./pages/patients/PatientAppointments";
+import PatientMedicalHistory from "./pages/patients/PatientMedicalHistory";
+import PatientProfile from "./pages/patients/PatientProfile";
 
 const App: React.FC = () => {
   return (
@@ -27,7 +30,11 @@ const App: React.FC = () => {
         <Route path="/schedule" element = {<ManageSchedule/>}/>
         <Route path="/appointments" element = {<ManageAppointments/>}/>
         <Route path="/doctor/appointments" element={<DoctorAppointments />} />
+        <Route path="/doctor/schedule" element={<DoctorScheduleView />} />
         <Route path="/patient/appointments" element={<PatientAppointments />} />
+        <Route path="/patient/history" element={<PatientMedicalHistory />} />
+        <Route path="/patients/:id/history" element={<PatientMedicalHistory />} />
+        <Route path="/patient/profile" element={<PatientProfile />} />
       </Routes>
     </Router>
   );

@@ -22,3 +22,9 @@ export const updateSchedule = async (id: number, schedule: any) => {
 export const deleteSchedule = async (id: number) => {
   await api.delete(`/api/schedules/${id}`);
 };
+
+// Obtener horarios por doctor
+export const getSchedulesByDoctor = async (doctorId: number) => {
+  const response = await api.get(`/api/schedules/doctor/${doctorId}`);
+  return response.data;
+};

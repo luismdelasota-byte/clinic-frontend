@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { User, Mail, Lock, ShieldCheck, ArrowLeft, UserPlus } from "lucide-react";
+import { User, Mail, Lock, ArrowLeft, UserPlus } from "lucide-react";
 import api from "../services/api.ts";
 import "../styles/Register.css";
 
@@ -8,7 +8,6 @@ const Register: React.FC = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("PATIENT");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -23,7 +22,7 @@ const Register: React.FC = () => {
         username,
         email,
         password,
-        role: role.toUpperCase(),
+        role: "PATIENT",
       });
       navigate("/login");
     } catch (error: any) {
@@ -102,17 +101,8 @@ const Register: React.FC = () => {
                 </div>
               </div>
 
-              <div className="input-group">
-                <label>Tipo de Usuario</label>
-                <div className="input-wrapper">
-                  <ShieldCheck size={18} className="input-icon" />
-                  <select value={role} onChange={(e) => setRole(e.target.value)}>
-                    <option value="PATIENT">Paciente</option>
-                    <option value="DOCTOR">Médico</option>
-                    <option value="ADMIN">Administrador</option>
-                  </select>
-                </div>
-              </div>
+              {/* Solo se permite registro de PACIENTES públicamente */}
+              <input type="hidden" value="PATIENT" />
 
               <button type="submit" className="btn-primary" disabled={loading}>
                 {loading ? "Registrando..." : "Registrarse"}

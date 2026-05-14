@@ -1,4 +1,4 @@
-/* ====== Gestión de Entidades (Estilo Compartido) ====== */
+/* ====== Gestión de Entidades ====== */
 
 .management-page {
   min-height: 100vh;
@@ -318,7 +318,7 @@
   gap: 0.75rem;
 }
 
-.card-body > div {
+.card-body>div {
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -339,8 +339,13 @@
   text-align: center;
 }
 
-.text-blue { color: var(--primary-color); }
-.text-green { color: var(--secondary-color); }
+.text-blue {
+  color: var(--primary-color);
+}
+
+.text-green {
+  color: var(--secondary-color);
+}
 
 @media (max-width: 900px) {
   .appointments-grid {
@@ -383,12 +388,37 @@
   color: var(--text-muted);
 }
 
-.edit-btn:hover { background-color: rgba(15, 82, 186, 0.1); color: var(--primary-color); }
-.delete-btn:hover { background-color: #FEF2F2; color: #DC2626; }
-.save-btn { color: var(--secondary-color); }
-.save-btn:hover { background-color: rgba(0, 168, 107, 0.1); }
-.cancel-btn { color: var(--text-muted); }
-.cancel-btn:hover { background-color: #E2E8F0; color: var(--text-main); }
+.edit-btn:hover {
+  background-color: rgba(15, 82, 186, 0.1);
+  color: var(--primary-color);
+}
+
+.view-btn:hover {
+  background-color: #EBF4FF;
+  color: #2B6CB0;
+}
+
+.delete-btn:hover {
+  background-color: #FEF2F2;
+  color: #DC2626;
+}
+
+.save-btn {
+  color: var(--secondary-color);
+}
+
+.save-btn:hover {
+  background-color: rgba(0, 168, 107, 0.1);
+}
+
+.cancel-btn {
+  color: var(--text-muted);
+}
+
+.cancel-btn:hover {
+  background-color: #E2E8F0;
+  color: var(--text-main);
+}
 
 /* Pagination */
 .pagination-controls {
@@ -443,9 +473,11 @@
   .page-header-top {
     padding: 1rem 1.5rem;
   }
+
   .management-container {
     padding: 1rem 1.5rem;
   }
+
   .search-box {
     max-width: 100%;
   }

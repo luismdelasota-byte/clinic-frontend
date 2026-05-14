@@ -1,17 +1,62 @@
 import React, { useState, useEffect } from "react";
-import { X, Search, User, ClipboardPlus, FileText, AlertCircle, Calendar } from "lucide-react";
+import { X, Search, User, ClipboardPlus, FileText } from "lucide-react";
 import { getAllPatients } from "../../services/patientService";
+import { saveMedicalReport } from "../../services/medicalReportService";
 import "../../styles/modals.css";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
+  appointmentId?: number;
+  patientId?: number;
+  doctorId?: number;
 }
 
-const MedicalReportModal: React.FC<Props> = ({ isOpen, onClose }) => {
+const MedicalReportModal: React.FC<Props> = ({ isOpen, onClose, patientId, doctorId }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [patients, setPatients] = useState<any[]>([]);
   const [selectedPatient, setSelectedPatient] = useState<any | null>(null);
+  const [reason, setReason] = useState("");
+  const [description, setDescription] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      loadData();
+      if (patientId) fetchPatient(patientId);
+    }
+  }, [isOpen, patientId]);
+
+  const fetchPatient = async (pid: number) => {
+    const pts = await getAllPatients();
+    const p = pts.find((pt: any) => pt.id === pid);
+    if (p) setSelectedPatient(p);
+  };
+
+  const handleSave = async () => {
+    if (!reason || !description) {
+      alert("Por favor completa el motivo y la descripción.");
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      await saveMedicalReport({
+        patient: { id: patientId || selectedPatient.id },
+        doctor: { id: doctorId },
+        reason,
+        description,
+        issueDate: new Date().toISOString()
+      });
+      alert("Informe médico guardado correctamente.");
+      onClose();
+    } catch (error) {
+      console.error("Error saving medical report:", error);
+      alert("Error al guardar el informe médico.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -94,49 +139,46 @@ const MedicalReportModal: React.FC<Props> = ({ isOpen, onClose }) => {
             )}
           </div>
 
-          {/* Historial de Informes */}
+          {/* Formulario de Reporte */}
           {selectedPatient ? (
-            <div className="history-feed">
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "1rem" }}>
-                <h3 style={{ display: "flex", alignItems: "center", gap: "8px", margin: 0 }}>
-                  <FileText size={20} color="#0F52BA" /> Informes Generados del Paciente
-                </h3>
-                <button className="btn-primary" style={{ backgroundColor: "#0F52BA", padding: "0.5rem 1rem" }}>Redactar Nuevo Informe</button>
-              </div>
+            <div className="modal-form-area">
+              <h3 style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "1rem" }}>
+                <FileText size={20} color="#0F52BA" /> Redactar Informe Médico
+              </h3>
 
-              <div className="record-card animate-fade-in" style={{ borderLeft: "4px solid #DC2626" }}>
-                <div className="record-header">
-                  <div>
-                    <div className="record-title" style={{ color: "#DC2626", display: "flex", alignItems: "center", gap: "8px" }}>
-                      <AlertCircle size={18} /> Orden de Hospitalización Urgente
-                    </div>
-                    <div className="record-date"><Calendar size={14} /> Fecha de Emisión: Hace 2 horas</div>
-                  </div>
-                  <span className="badge-status danger">Requiere Internamiento</span>
+              <div className="form-content animate-fade-in">
+                <div className="input-group">
+                  <label>Motivo del Informe</label>
+                  <input 
+                    type="text"
+                    placeholder="Ej. Referencia a especialidad, Resumen de alta..."
+                    value={reason}
+                    onChange={(e) => setReason(e.target.value)}
+                  />
                 </div>
-                <div className="record-content">
-                  <h4>Detalle del Informe Médico (Simulado)</h4>
-                  <p style={{ borderLeftColor: "#DC2626" }}>
-                    A través del presente documento se informa la condición crítica del paciente <strong>{selectedPatient.name}</strong>, quien acudió a urgencias presentando dificultad respiratoria severa (disnea), saturación de oxígeno del 85% al aire ambiente y taquicardia.<br /><br />
-                    <strong>Motivo de Hospitalización:</strong> Se ordena internamiento inmediato en la unidad de cuidados intermedios para administración de oxigenoterapia de alto flujo y monitoreo cardíaco continuo. Sospecha de neumonía atípica bilateral complicada.<br /><br />
-                    <strong>Pronóstico:</strong> Reservado. Pendiente resultados de gasometría arterial y tomografía de tórax.
-                  </p>
 
-                  <div style={{ display: "flex", gap: "10px", marginTop: "1rem" }}>
-                    <button style={{ padding: "8px 15px", background: "transparent", border: "1px solid #E2E8F0", borderRadius: "6px", cursor: "pointer", fontSize: "0.85rem", fontWeight: "600", display: "flex", alignItems: "center", gap: "5px" }}>
-                      <FileText size={16} /> Imprimir PDF
-                    </button>
-                    <button style={{ padding: "8px 15px", background: "#FEF2F2", border: "none", color: "#DC2626", borderRadius: "6px", cursor: "pointer", fontSize: "0.85rem", fontWeight: "600", display: "flex", alignItems: "center", gap: "5px" }}>
-                      Enviar a Emergencias
-                    </button>
-                  </div>
+                <div className="input-group">
+                  <label>Descripción y Recomendaciones</label>
+                  <textarea 
+                    placeholder="Escribe el contenido detallado del informe..."
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    rows={8}
+                  />
+                </div>
+
+                <div className="modal-actions">
+                  <button className="btn-cancel" onClick={onClose}>Cancelar</button>
+                  <button className="btn-primary" style={{ background: "#0F52BA" }} onClick={handleSave} disabled={isSaving}>
+                    {isSaving ? "Guardando..." : "Guardar Informe"}
+                  </button>
                 </div>
               </div>
             </div>
           ) : (
             <div style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", color: "var(--text-muted)", flexDirection: "column", gap: "10px" }}>
               <Search size={48} opacity={0.2} />
-              <p>Busca y selecciona un paciente para emitir o ver sus Informes y Referencias.</p>
+              <p>Busca y selecciona un paciente para emitir un nuevo Informe Médico.</p>
             </div>
           )}
 

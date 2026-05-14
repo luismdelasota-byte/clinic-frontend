@@ -1,19 +1,68 @@
 import React, { useState, useEffect } from "react";
-import { X, Search, User, Calendar, ClipboardList, Activity, Stethoscope } from "lucide-react";
+import { X, Search, User, ClipboardList, Stethoscope } from "lucide-react";
 import { getAllPatients } from "../../services/patientService";
-import { getAllAppointments } from "../../services/appointmentService";
+import { saveClinicalHistory } from "../../services/clinicalHistoryService";
 import "../../styles/modals.css";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
+  appointmentId?: number;
+  patientId?: number;
+  doctorId?: number;
 }
 
-const ClinicalDiaryModal: React.FC<Props> = ({ isOpen, onClose }) => {
+const ClinicalDiaryModal: React.FC<Props> = ({ isOpen, onClose, patientId, doctorId }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [patients, setPatients] = useState<any[]>([]);
-  const [appointments, setAppointments] = useState<any[]>([]);
   const [selectedPatient, setSelectedPatient] = useState<any | null>(null);
+  const [diagnosis, setDiagnosis] = useState("");
+  const [treatment, setTreatment] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      loadData();
+      if (patientId) {
+        fetchPatientAndAppts(patientId);
+      }
+    }
+  }, [isOpen, patientId]);
+
+  const fetchPatientAndAppts = async (pid: number) => {
+    try {
+      const pts = await getAllPatients();
+      const p = pts.find((pt: any) => pt.id === pid);
+      if (p) setSelectedPatient(p);
+    } catch (error) {
+      console.error("Error fetching patient details:", error);
+    }
+  };
+
+  const handleSave = async () => {
+    if (!diagnosis || !treatment) {
+      alert("Por favor completa el diagnóstico y el tratamiento.");
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      await saveClinicalHistory({
+        patient: { id: patientId || selectedPatient.id },
+        doctor: { id: doctorId },
+        diagnosis,
+        treatment,
+        createdAt: new Date().toISOString()
+      });
+      alert("Diario clínico guardado correctamente.");
+      onClose();
+    } catch (error) {
+      console.error("Error saving clinical history:", error);
+      alert("Error al guardar el diario clínico.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -23,9 +72,7 @@ const ClinicalDiaryModal: React.FC<Props> = ({ isOpen, onClose }) => {
 
   const loadData = async () => {
     const pts = await getAllPatients();
-    const appts = await getAllAppointments();
     setPatients(pts);
-    setAppointments(appts);
   };
 
   if (!isOpen) return null;
@@ -39,10 +86,6 @@ const ClinicalDiaryModal: React.FC<Props> = ({ isOpen, onClose }) => {
     setSelectedPatient(patient);
     setSearchTerm("");
   };
-
-  const patientAppointments = selectedPatient
-    ? appointments.filter(a => a.patient.id === selectedPatient.id)
-    : [];
 
   return (
     <div className="fullscreen-modal-overlay animate-fade-in" onClick={onClose}>
@@ -102,43 +145,46 @@ const ClinicalDiaryModal: React.FC<Props> = ({ isOpen, onClose }) => {
             )}
           </div>
 
-          {/* Historial del Paciente */}
+          {/* Historial del Paciente o Formulario de Registro */}
           {selectedPatient ? (
-            <div className="history-feed">
+            <div className="modal-form-area">
               <h3 style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "1rem" }}>
-                <Activity size={20} color="var(--primary-color)" /> Historial de Citas y Diagnósticos
+                <Stethoscope size={20} color="var(--primary-color)" /> Registrar Diario Clínico
               </h3>
+              
+              <div className="form-content animate-fade-in">
+                <div className="input-group">
+                  <label>Diagnóstico</label>
+                  <textarea 
+                    placeholder="Describe el diagnóstico del paciente..."
+                    value={diagnosis}
+                    onChange={(e) => setDiagnosis(e.target.value)}
+                    rows={4}
+                  />
+                </div>
 
-              {patientAppointments.length === 0 ? (
-                <p className="empty-state" style={{ textAlign: "center", padding: "2rem" }}>El paciente no tiene historial registrado aún.</p>
-              ) : (
-                patientAppointments.map(appt => (
-                  <div key={appt.id} className="record-card animate-fade-in">
-                    <div className="record-header">
-                      <div>
-                        <div className="record-title">Atención Médica</div>
-                        <div className="record-date"><Calendar size={14} /> {appt.appointmentDate.replace("T", " ")}</div>
-                        <div className="record-date" style={{ marginTop: "5px" }}><Stethoscope size={14} /> Dr(a). {appt.doctor.name}</div>
-                      </div>
-                      <span className="badge-status active">{appt.status}</span>
-                    </div>
-                    <div className="record-content">
-                      <h4>Diagnóstico (Simulado)</h4>
-                      <p>Paciente presenta cuadro de infección respiratoria aguda. Refiere fiebre de 39°C y malestar general desde hace 48 horas. Faringe hiperémica, amígdalas inflamadas sin placas purulentas. Pulmones limpios a la auscultación.</p>
+                <div className="input-group">
+                  <label>Tratamiento y Receta</label>
+                  <textarea 
+                    placeholder="Detalla el tratamiento y medicamentos..."
+                    value={treatment}
+                    onChange={(e) => setTreatment(e.target.value)}
+                    rows={6}
+                  />
+                </div>
 
-                      <h4>Tratamiento y Notas (Simulado)</h4>
-                      <p>1. Paracetamol 500mg cada 8 horas por 3 días.<br />
-                        2. Amoxicilina 500mg cada 8 horas por 7 días.<br />
-                        3. Reposo absoluto por 48 horas. Hidratación abundante.</p>
-                    </div>
-                  </div>
-                ))
-              )}
+                <div className="modal-actions">
+                  <button className="btn-cancel" onClick={onClose}>Cancelar</button>
+                  <button className="btn-primary" onClick={handleSave} disabled={isSaving}>
+                    {isSaving ? "Guardando..." : "Guardar Diario"}
+                  </button>
+                </div>
+              </div>
             </div>
           ) : (
             <div style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", color: "var(--text-muted)", flexDirection: "column", gap: "10px" }}>
               <Search size={48} opacity={0.2} />
-              <p>Busca y selecciona un paciente para ver su Diario Clínico.</p>
+              <p>Busca y selecciona un paciente para registrar su Diario Clínico.</p>
             </div>
           )}
 

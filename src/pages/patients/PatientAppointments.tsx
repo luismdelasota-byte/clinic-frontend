@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Calendar, Clock, User, ArrowLeft, CheckCircle, AlertCircle, CalendarDays } from "lucide-react";
+import { Calendar, Clock, ArrowLeft, CheckCircle, AlertCircle, CalendarDays } from "lucide-react";
 import { getAppointmentsByPatient } from "../../services/appointmentService";
 import "../../styles/patients.css"; // Reutilizamos estilos de pacientes o creamos uno nuevo
 
 interface Appointment {
   id: number;
-  doctorName: string;
-  date: string;
-  time: string;
+  appointmentDate: string;
   status: string;
+  doctor: {
+    id: number;
+    name: string;
+    speciality: string;
+  };
 }
 
 const PatientAppointments: React.FC = () => {
@@ -18,7 +21,6 @@ const PatientAppointments: React.FC = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Obtener el ID del paciente: de la URL o del localStorage si es el paciente logueado
   const patientId = id ? Number(id) : Number(localStorage.getItem("patientId"));
 
   useEffect(() => {
@@ -40,30 +42,31 @@ const PatientAppointments: React.FC = () => {
     }
   };
 
-  const isPast = (dateStr: string) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const apptDate = new Date(dateStr);
-    return apptDate < today;
+  const formatDateTime = (dateString: string) => {
+    const date = new Date(dateString);
+    const day = date.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
+    const time = date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    return { day, time };
   };
 
-  const upcomingAppointments = appointments.filter(a => !isPast(a.date));
-  const pastAppointments = appointments.filter(a => isPast(a.date));
+  const pendingAppointments = appointments.filter(a => a.status === "PENDING" || a.status === "SCHEDULED" || a.status === "IN_CONSULTATION");
+  const completedAppointments = appointments.filter(a => a.status === "COMPLETED");
+  const cancelledAppointments = appointments.filter(a => a.status === "CANCELLED" || a.status === "NO_SHOW");
 
   return (
-    <div className="manage-patients-container">
-      <header className="page-header">
-        <button className="back-button" onClick={() => navigate("/dashboard")}>
+    <div className="patient-appointments-page animate-fade-in">
+      <header className="page-header-top">
+        <button className="back-btn" onClick={() => navigate("/dashboard")}>
           <ArrowLeft size={20} />
           <span>Volver al Dashboard</span>
         </button>
-        <div className="header-title">
+        <div className="title-group">
           <CalendarDays className="header-icon" size={32} />
           <h1>Mis Citas Médicas</h1>
         </div>
       </header>
 
-      <div className="appointments-content animate-fade-in">
+      <div className="appointments-content-area">
         {loading ? (
           <div className="loading-state">Cargando tus citas...</div>
         ) : appointments.length === 0 ? (
@@ -72,73 +75,99 @@ const PatientAppointments: React.FC = () => {
             <p>No tienes citas registradas aún.</p>
           </div>
         ) : (
-          <div className="appointments-grid">
+          <div className="appointments-sections">
             
-            {/* Sección: Próximas Citas */}
-            <section className="appointment-section">
-              <h2 className="section-title">
-                <AlertCircle size={20} className="text-blue" />
-                Próximas Citas
+            {/* Pendientes */}
+            <section className="appt-section">
+              <h2 className="section-title text-blue">
+                <AlertCircle size={20} /> Próximas Citas ({pendingAppointments.length})
               </h2>
-              <div className="appointment-cards">
-                {upcomingAppointments.length > 0 ? (
-                  upcomingAppointments.map(a => (
-                    <div key={a.id} className="appointment-card upcoming">
-                      <div className="card-status status-pending">Pendiente</div>
-                      <div className="card-body">
-                        <div className="doctor-info">
-                          <User size={18} />
-                          <span>{a.doctorName}</span>
-                        </div>
-                        <div className="date-info">
-                          <Calendar size={18} />
-                          <span>{a.date}</span>
-                        </div>
-                        <div className="time-info">
-                          <Clock size={18} />
-                          <span>{a.time}</span>
+              <div className="appointments-grid-modern">
+                {pendingAppointments.map(a => {
+                  const { day, time } = formatDateTime(a.appointmentDate);
+                  return (
+                    <div key={a.id} className="appt-card-modern pending">
+                      <div className="card-top">
+                        <span className="status-badge pending">{a.status}</span>
+                        <span className="appt-time"><Clock size={16} /> {time} hs</span>
+                      </div>
+                      <div className="doctor-info-card">
+                        <div className="doctor-avatar">Dr</div>
+                        <div className="doctor-details">
+                          <h3>{a.doctor.name}</h3>
+                          <p>{a.doctor.speciality}</p>
                         </div>
                       </div>
+                      <div className="date-badge-footer">
+                        <Calendar size={14} /> {day}
+                      </div>
                     </div>
-                  ))
-                ) : (
-                  <p className="no-data">No tienes citas pendientes.</p>
-                )}
+                  );
+                })}
               </div>
             </section>
 
-            {/* Sección: Historial */}
-            <section className="appointment-section">
-              <h2 className="section-title">
-                <CheckCircle size={20} className="text-green" />
-                Historial (Atendidas)
+            {/* Atendidas */}
+            <section className="appt-section mt-4">
+              <h2 className="section-title text-green">
+                <CheckCircle size={20} /> Historial / Atendidas ({completedAppointments.length})
               </h2>
-              <div className="appointment-cards">
-                {pastAppointments.length > 0 ? (
-                  pastAppointments.map(a => (
-                    <div key={a.id} className="appointment-card past">
-                      <div className="card-status status-completed">Atendido</div>
-                      <div className="card-body">
-                        <div className="doctor-info">
-                          <User size={18} />
-                          <span>{a.doctorName}</span>
-                        </div>
-                        <div className="date-info">
-                          <Calendar size={18} />
-                          <span>{a.date}</span>
-                        </div>
-                        <div className="time-info">
-                          <Clock size={18} />
-                          <span>{a.time}</span>
+              <div className="appointments-grid-modern">
+                {completedAppointments.map(a => {
+                  const { day, time } = formatDateTime(a.appointmentDate);
+                  return (
+                    <div key={a.id} className="appt-card-modern completed">
+                      <div className="card-top">
+                        <span className="status-badge completed">ATENDIDO</span>
+                        <span className="appt-time"><Clock size={16} /> {time} hs</span>
+                      </div>
+                      <div className="doctor-info-card">
+                        <div className="doctor-avatar">Dr</div>
+                        <div className="doctor-details">
+                          <h3>{a.doctor.name}</h3>
+                          <p>{a.doctor.speciality}</p>
                         </div>
                       </div>
+                      <div className="date-badge-footer">
+                        <Calendar size={14} /> {day}
+                      </div>
                     </div>
-                  ))
-                ) : (
-                  <p className="no-data">No hay historial de citas.</p>
-                )}
+                  );
+                })}
               </div>
             </section>
+
+            {/* Canceladas o Inasistencias */}
+            {cancelledAppointments.length > 0 && (
+              <section className="appt-section mt-4">
+                <h2 className="section-title text-orange">
+                  <AlertCircle size={20} /> Canceladas / Inasistencias ({cancelledAppointments.length})
+                </h2>
+                <div className="appointments-grid-modern">
+                  {cancelledAppointments.map(a => {
+                    const { day, time } = formatDateTime(a.appointmentDate);
+                    return (
+                      <div key={a.id} className="appt-card-modern cancelled">
+                        <div className="card-top">
+                          <span className="status-badge cancelled">{a.status}</span>
+                          <span className="appt-time"><Clock size={16} /> {time} hs</span>
+                        </div>
+                        <div className="doctor-info-card">
+                          <div className="doctor-avatar">Dr</div>
+                          <div className="doctor-details">
+                            <h3>{a.doctor.name}</h3>
+                            <p>{a.doctor.speciality}</p>
+                          </div>
+                        </div>
+                        <div className="date-badge-footer">
+                          <Calendar size={14} /> {day}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </section>
+            )}
 
           </div>
         )}
