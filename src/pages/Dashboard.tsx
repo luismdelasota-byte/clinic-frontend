@@ -383,13 +383,13 @@ const Dashboard: React.FC = () => {
               )}
               
               <div className="stats-grid">
-                <div className={`stat-card ${!doctorId ? 'disabled' : ''}`} onClick={() => doctorId && navigate("/doctor/appointments")}>
+                <div className={`stat-card ${!doctorId ? 'disabled' : ''}`} onClick={() => doctorId && navigate("/doctor/appointments?mode=view")}>
                   <div className="stat-icon-wrapper blue"><Calendar size={24} /></div>
-                  <div className="stat-info"><h3>Mi Agenda</h3><p className="stat-value">Ver Citas</p></div>
+                  <div className="stat-info"><h3>Mi Agenda</h3><p className="stat-value">Consultar Citas</p></div>
                 </div>
-                <div className={`stat-card ${!doctorId ? 'disabled' : ''}`} onClick={() => doctorId && navigate("/doctor/appointments")}>
+                <div className={`stat-card ${!doctorId ? 'disabled' : ''}`} onClick={() => doctorId && navigate("/doctor/appointments?mode=register")}>
                   <div className="stat-icon-wrapper green"><ClipboardList size={24} /></div>
-                  <div className="stat-info"><h3>Continuidad</h3><p className="stat-value">Agendar Seguimiento</p></div>
+                  <div className="stat-info"><h3>Registrar Cita</h3><p className="stat-value">Agendar Paciente</p></div>
                 </div>
                 <div className={`stat-card ${!doctorId ? 'disabled' : ''}`} onClick={() => doctorId && navigate("/doctor/schedule")}>
                   <div className="stat-icon-wrapper orange"><Clock size={24} /></div>
