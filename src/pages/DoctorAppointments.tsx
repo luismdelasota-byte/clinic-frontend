@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAppointmentsByDoctor } from "../services/appointmentService";
-import { Calendar, User, Phone, Mail, Clock, ArrowLeft, CheckCircle, XCircle, AlertCircle, Filter, CalendarDays } from "lucide-react";
+import { Calendar, User, Mail, Clock, ArrowLeft, CheckCircle, AlertCircle, Filter, CalendarDays } from "lucide-react";
 import "../styles/DoctorAppointments.css";
 
 interface Appointment {
   id: number;
-  appointmentDate: string;
+  appointmentDate: string
   status: string;
   patient: {
     id: number;
@@ -149,7 +149,7 @@ const DoctorAppointments: React.FC = () => {
               </h2>
               <div className="appt-cards-stack">
                 {pastAppointments.map(a => {
-                  const { day, time } = formatDateTime(a.appointmentDate);
+                  const { day} = formatDateTime(a.appointmentDate);
                   return (
                     <div key={a.id} className="appt-card past">
                       <div className="card-badge completed">Atendido</div>
