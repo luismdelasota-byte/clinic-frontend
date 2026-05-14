@@ -12,8 +12,10 @@ import axios from "axios";
 
 //Configuracion base de Axios
 const api = axios.create({
-    baseURL: "http://localhost:8081" //Define la direccion base del backend
+    // Usa la variable de entorno para produccion, o localhost para desarrollo
+    baseURL: import.meta.env.VITE_API_URL || "http://localhost:8080" 
 });
+
 
 //Interceptor para incluir el token en cada request
 /*Antes de ejecutar cualquier request, ejecuta esta funcion "api.interceptor.request.use((config) => {})*/
