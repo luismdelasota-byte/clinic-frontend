@@ -3,14 +3,14 @@
 :root {
   /* Colors - Premium Medical Palette */
   --primary-color: #0F52BA; /* Sapphire Blue */
-  --primary-light: #4A90E2;
-  --primary-dark: #003366;
-  --secondary-color: #00A86B; /* Jade Green */
-  --accent-color: #FF6B6B; /* Soft Red for alerts/errors */
+  --primary-light: #3B82F6;
+  --primary-dark: #1E3A8A;
+  --secondary-color: #10B981; /* Emerald Green */
+  --accent-color: #EF4444; /* Rose Red */
   
-  --bg-color: #F4F7F6; /* Very light cool grey */
+  --bg-color: #F8FAFC; /* Clean Slate 50 */
   --bg-card: #FFFFFF;
-  --bg-dark: #1E293B; /* Slate 800 */
+  --bg-dark: #0F172A; /* Slate 900 */
   
   --text-main: #2D3748; /* Dark gray for main text */
   --text-muted: #718096; /* Lighter gray for secondary text */

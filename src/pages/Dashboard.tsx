@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Users, Calendar, Activity, Clock, LogOut,
-  Settings, UserPlus, ClipboardList, TrendingUp, Bell, Search, LayoutDashboard, ShieldAlert
+  Settings, UserPlus, ClipboardList, TrendingUp, Bell, LayoutDashboard, ShieldAlert
 } from "lucide-react";
 import "../styles/Dashboard.css";
 import { getAllDoctors } from "../services/doctorService";

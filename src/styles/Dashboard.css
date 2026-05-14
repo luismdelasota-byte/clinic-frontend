@@ -70,9 +70,15 @@
 }
 
 .nav-item.active {
-  background-color: rgba(15, 82, 186, 0.1);
-  color: var(--primary-color);
+  background-color: var(--primary-color);
+  color: white;
   font-weight: 600;
+  box-shadow: 0 4px 12px rgba(15, 82, 186, 0.2);
+}
+
+.nav-item.active:hover {
+  background-color: var(--primary-dark);
+  color: white;
 }
 
 .sidebar-footer {
@@ -252,7 +258,8 @@
 }
 
 .stat-icon-wrapper.blue { background-color: rgba(15, 82, 186, 0.1); color: var(--primary-color); }
-.stat-icon-wrapper.green { background-color: rgba(0, 168, 107, 0.1); color: var(--secondary-color); }
+.stat-icon-wrapper.green { background-color: rgba(16, 185, 129, 0.1); color: var(--secondary-color); }
+.stat-icon-wrapper.teal { background-color: rgba(20, 184, 166, 0.1); color: #14B8A6; }
 .stat-icon-wrapper.purple { background-color: rgba(139, 92, 246, 0.1); color: #8B5CF6; }
 .stat-icon-wrapper.orange { background-color: rgba(245, 158, 11, 0.1); color: #F59E0B; }
 
