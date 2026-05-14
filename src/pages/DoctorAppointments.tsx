@@ -8,7 +8,6 @@ import {
 import "../styles/DoctorAppointments.css";
 import { updateAppointmentStatus, getAppointmentsByDoctor, saveAppointment } from "../services/appointmentService";
 import { getSchedulesByDoctor } from "../services/scheduleService";
-import { getAllPatients } from "../services/patientService";
 import ClinicalDiaryModal from "../components/modals/ClinicalDiaryModal";
 
 interface Appointment {
@@ -58,14 +57,25 @@ const DoctorAppointments: React.FC = () => {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [appts, schs, pts] = await Promise.all([
+      const [appts, schs] = await Promise.all([
         getAppointmentsByDoctor(Number(doctorId)),
-        getSchedulesByDoctor(Number(doctorId)),
-        getAllPatients()
+        getSchedulesByDoctor(Number(doctorId))
       ]);
       setAppointments(appts);
       setSchedules(schs);
-      setPatients(pts);
+      
+      // Filtrar pacientes: Solo aquellos que ya tienen o tuvieron cita con este doctor
+      const uniquePatients: any[] = [];
+      const patientIds = new Set();
+      
+      appts.forEach((a: any) => {
+        if (!patientIds.has(a.patient.id)) {
+          patientIds.add(a.patient.id);
+          uniquePatients.push(a.patient);
+        }
+      });
+      
+      setPatients(uniquePatients);
     } catch (err) {
       console.error("Error cargando datos:", err);
     } finally {
