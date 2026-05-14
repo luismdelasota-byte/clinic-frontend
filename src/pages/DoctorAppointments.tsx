@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { 
   Calendar, Clock, ChevronLeft, ChevronRight, ArrowLeft, 
-  CheckCircle, FileText, ClipboardList, Activity, CalendarDays, Mail, FilePlus,
+  CheckCircle, Activity, CalendarDays, FilePlus,
   Plus, User
 } from "lucide-react";
 import "../styles/DoctorAppointments.css";
@@ -10,8 +10,6 @@ import { updateAppointmentStatus, getAppointmentsByDoctor, saveAppointment } fro
 import { getSchedulesByDoctor } from "../services/scheduleService";
 import { getAllPatients } from "../services/patientService";
 import ClinicalDiaryModal from "../components/modals/ClinicalDiaryModal";
-import MedicalLeaveModal from "../components/modals/MedicalLeaveModal";
-import MedicalReportModal from "../components/modals/MedicalReportModal";
 
 interface Appointment {
   id: number;
