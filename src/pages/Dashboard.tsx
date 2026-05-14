@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Users, Calendar, Activity, Clock, LogOut,
-  Settings, UserPlus, ClipboardList, TrendingUp, Bell, Search, LayoutDashboard
+  Settings, UserPlus, ClipboardList, TrendingUp, Bell, Search, LayoutDashboard, ShieldAlert
 } from "lucide-react";
 import "../styles/Dashboard.css";
 import { getAllDoctors } from "../services/doctorService";
@@ -64,6 +64,33 @@ const Dashboard: React.FC = () => {
     if (userRole === "ADMIN") loadData();
     else setLoading(false); // Para doctor/paciente omitimos carga pesada global en dashboard inicial
   }, [userRole]);
+
+  // --- Datos del Doctor Logueado ---
+  const [doctorData, setDoctorData] = useState<any>(null);
+  const doctorId = localStorage.getItem("doctorId");
+
+  useEffect(() => {
+    if (userRole === "DOCTOR" && doctorId) {
+      const fetchDoctor = async () => {
+        try {
+          const data = await getAllDoctors();
+          const me = data.find((d: any) => d.id === Number(doctorId));
+          setDoctorData(me);
+        } catch (e) {
+          console.error("Error fetching doctor data", e);
+        }
+      };
+      fetchDoctor();
+    }
+  }, [userRole, doctorId]);
+
+  // --- Notificaciones ---
+  const [showNotifications, setShowNotifications] = useState(false);
+  const notifications = [
+    { id: 1, text: "Nueva cita agendada por paciente Pedro Alva", time: "Hace 5 min" },
+    { id: 2, text: "Recordatorio: Cita próxima con Jimena Rios", time: "En 30 min" },
+    { id: 3, text: "Actualización de sistema completada", time: "Hace 2 horas" }
+  ];
 
   // --- Indicadores Admin ---
   const today = new Date().toISOString().split("T")[0];
@@ -196,20 +223,36 @@ const Dashboard: React.FC = () => {
       {/* Main Content */}
       <main className="dashboard-main">
         <header className="topbar">
-          <div className="search-bar">
-            <Search size={18} className="search-icon" />
-            <input type="text" placeholder="Buscar..." />
+          <div className="topbar-left">
+            {/* Buscador eliminado por solicitud del usuario */}
           </div>
           <div className="user-profile">
-            <button className="icon-btn">
-              <Bell size={20} />
-              <span className="badge">3</span>
-            </button>
+            <div className="notification-wrapper">
+              <button className="icon-btn" onClick={() => setShowNotifications(!showNotifications)}>
+                <Bell size={20} />
+                <span className="badge">{notifications.length}</span>
+              </button>
+              {showNotifications && (
+                <div className="notifications-dropdown animate-fade-in">
+                  <div className="dropdown-header">Notificaciones</div>
+                  <div className="notifications-list">
+                    {notifications.map(n => (
+                      <div key={n.id} className="notification-item">
+                        <p>{n.text}</p>
+                        <span>{n.time}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
             <div className="avatar">
-              {userRole?.charAt(0) || "U"}
+              {doctorData ? doctorData.name.charAt(0) : userRole?.charAt(0) || "U"}
             </div>
             <div className="user-info-text">
-              <span className="user-name">{userRole === 'ADMIN' ? 'Administrador' : userRole === 'DOCTOR' ? 'Dr. Médico' : 'Paciente'}</span>
+              <span className="user-name">
+                {userRole === 'ADMIN' ? 'Administrador' : (doctorData ? doctorData.name : 'Usuario')}
+              </span>
               <span className="user-role">{userRole}</span>
             </div>
           </div>
@@ -312,55 +355,62 @@ const Dashboard: React.FC = () => {
 
           {userRole === "DOCTOR" && (
             <div className="role-specific-section">
+              {!doctorId && (
+                <div className="alert-message error mb-4">
+                  <ShieldAlert size={20} />
+                  <span>Atención: Su registro médico aún no ha sido completado por el administrador. Las funciones de gestión están limitadas.</span>
+                </div>
+              )}
+              
               <div className="stats-grid">
-                <div className="stat-card" onClick={() => navigate("/doctor/appointments")}>
+                <div className={`stat-card ${!doctorId ? 'disabled' : ''}`} onClick={() => doctorId && navigate("/doctor/appointments")}>
                   <div className="stat-icon-wrapper blue"><Calendar size={24} /></div>
                   <div className="stat-info"><h3>Mis Citas</h3><p className="stat-value">Ver Agenda</p></div>
                 </div>
-                <div className="stat-card" onClick={() => navigate("/patients")}>
+                <div className={`stat-card ${!doctorId ? 'disabled' : ''}`} onClick={() => doctorId && navigate("/patients")}>
                   <div className="stat-icon-wrapper green"><UserPlus size={24} /></div>
                   <div className="stat-info"><h3>Registrar Paciente</h3><p className="stat-value">Nuevo</p></div>
                 </div>
-                <div className="stat-card" onClick={() => navigate("/doctor/schedule")}>
+                <div className={`stat-card ${!doctorId ? 'disabled' : ''}`} onClick={() => doctorId && navigate("/doctor/schedule")}>
                   <div className="stat-icon-wrapper orange"><Clock size={24} /></div>
                   <div className="stat-info"><h3>Mi Horario</h3><p className="stat-value">Disponibilidad</p></div>
                 </div>
               </div>
 
-              {/* Acciones Rápidas para Doctor */}
+              {/* Módulo de Gestión Médica */}
               <div className="dashboard-card mt-4">
                 <div className="card-header">
-                  <h3>Acciones Médicas Rápidas</h3>
+                  <h3>Módulo de Gestión Médica</h3>
                 </div>
                 <div className="quick-actions-grid">
-                  <button className="action-btn" onClick={() => setDocModal({ open: true, type: "diarioClinico" })}>
+                  <button 
+                    className="quick-action-btn" 
+                    onClick={() => doctorId && setDocModal({ open: true, type: "diarioClinico" })}
+                    disabled={!doctorId}
+                  >
                     <ClipboardList size={20} />
                     <span>Diario Clínico</span>
                   </button>
-                  <button className="leave-btn" onClick={() => setDocModal({ open: true, type: "descansoMedico" })}>
+                  <button 
+                    className="quick-action-btn" 
+                    onClick={() => doctorId && setDocModal({ open: true, type: "descansoMedico" })}
+                    disabled={!doctorId}
+                  >
                     <Activity size={20} />
                     <span>Descanso Médico</span>
                   </button>
-                  <button className="report-btn" onClick={() => setDocModal({ open: true, type: "informesMedicos" })}>
+                  <button 
+                    className="quick-action-btn" 
+                    onClick={() => doctorId && setDocModal({ open: true, type: "informesMedicos" })}
+                    disabled={!doctorId}
+                  >
                     <Users size={20} />
                     <span>Informes Médicos</span>
                   </button>
                 </div>
               </div>
 
-              <div className="dashboard-card mt-4">
-                <div className="card-header"><h3>Actividad Reciente</h3></div>
-                <div className="activity-list">
-                  <div className="activity-item">
-                    <div className="activity-dot"></div>
-                    <p>Revisar historial clínico de paciente Juan Pérez - 09:00 AM</p>
-                  </div>
-                  <div className="activity-item">
-                    <div className="activity-dot"></div>
-                    <p>Cita programada con María Gómez - 11:30 AM</p>
-                  </div>
-                </div>
-              </div>
+              {/* Actividad Reciente eliminada por solicitud */}
             </div>
           )}
 
