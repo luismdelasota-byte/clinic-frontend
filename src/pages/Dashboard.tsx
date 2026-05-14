@@ -326,6 +326,28 @@ const Dashboard: React.FC = () => {
                   <div className="stat-info"><h3>Mi Horario</h3><p className="stat-value">Disponibilidad</p></div>
                 </div>
               </div>
+
+              {/* Acciones Rápidas para Doctor */}
+              <div className="dashboard-card mt-4">
+                <div className="card-header">
+                  <h3>Acciones Médicas Rápidas</h3>
+                </div>
+                <div className="quick-actions-grid">
+                  <button className="action-btn" onClick={() => setDocModal({ open: true, type: "diarioClinico" })}>
+                    <ClipboardList size={20} />
+                    <span>Diario Clínico</span>
+                  </button>
+                  <button className="leave-btn" onClick={() => setDocModal({ open: true, type: "descansoMedico" })}>
+                    <Activity size={20} />
+                    <span>Descanso Médico</span>
+                  </button>
+                  <button className="report-btn" onClick={() => setDocModal({ open: true, type: "informesMedicos" })}>
+                    <Users size={20} />
+                    <span>Informes Médicos</span>
+                  </button>
+                </div>
+              </div>
+
               <div className="dashboard-card mt-4">
                 <div className="card-header"><h3>Actividad Reciente</h3></div>
                 <div className="activity-list">

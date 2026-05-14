@@ -95,115 +95,122 @@ const PatientProfile: React.FC = () => {
           </div>
         )}
 
-        <div className="profile-grid">
-          {/* Datos Personales */}
-          <div className="profile-card">
-            <div className="card-header">
-              <ShieldCheck size={24} />
-              <h2>Datos Personales</h2>
-            </div>
-            <form onSubmit={handleUpdateProfile} className="profile-form">
-              <div className="input-group">
-                <label>Nombre Completo</label>
-                <div className="input-wrapper">
-                  <User size={18} />
-                  <input 
-                    type="text" 
-                    value={patient.name} 
-                    onChange={(e) => setPatient({...patient, name: e.target.value})}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="input-group">
-                <label>Correo Electrónico</label>
-                <div className="input-wrapper">
-                  <Mail size={18} />
-                  <input 
-                    type="email" 
-                    value={patient.email} 
-                    onChange={(e) => setPatient({...patient, email: e.target.value})}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="input-group">
-                <label>Teléfono</label>
-                <div className="input-wrapper">
-                  <Phone size={18} />
-                  <input 
-                    type="text" 
-                    value={patient.phone} 
-                    onChange={(e) => setPatient({...patient, phone: e.target.value})}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="input-group">
-                <label>Fecha de Nacimiento</label>
-                <div className="input-wrapper">
-                  <Calendar size={18} />
-                  <input 
-                    type="date" 
-                    value={patient.birthDate} 
-                    onChange={(e) => setPatient({...patient, birthDate: e.target.value})}
-                    required
-                  />
-                </div>
-              </div>
-
-              <button type="submit" className="btn-primary">
-                <Save size={18} /> Guardar Cambios
-              </button>
-            </form>
+        {!patient ? (
+          <div className="empty-state">
+            <User size={48} />
+            <p>No se pudieron cargar los datos del perfil.</p>
           </div>
+        ) : (
+          <div className="profile-grid">
+            {/* Datos Personales */}
+            <div className="profile-card">
+              <div className="card-header">
+                <ShieldCheck size={24} />
+                <h2>Datos Personales</h2>
+              </div>
+              <form onSubmit={handleUpdateProfile} className="profile-form">
+                <div className="input-group">
+                  <label>Nombre Completo</label>
+                  <div className="input-wrapper">
+                    <User size={18} />
+                    <input 
+                      type="text" 
+                      value={patient.name || ""} 
+                      onChange={(e) => setPatient({...patient, name: e.target.value})}
+                      required
+                    />
+                  </div>
+                </div>
 
-          {/* Seguridad */}
-          <div className="profile-card">
-            <div className="card-header">
-              <Lock size={24} />
-              <h2>Seguridad</h2>
+                <div className="input-group">
+                  <label>Correo Electrónico</label>
+                  <div className="input-wrapper">
+                    <Mail size={18} />
+                    <input 
+                      type="email" 
+                      value={patient.email || ""} 
+                      onChange={(e) => setPatient({...patient, email: e.target.value})}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="input-group">
+                  <label>Teléfono</label>
+                  <div className="input-wrapper">
+                    <Phone size={18} />
+                    <input 
+                      type="text" 
+                      value={patient.phone || ""} 
+                      onChange={(e) => setPatient({...patient, phone: e.target.value})}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="input-group">
+                  <label>Fecha de Nacimiento</label>
+                  <div className="input-wrapper">
+                    <Calendar size={18} />
+                    <input 
+                      type="date" 
+                      value={patient.birthDate || ""} 
+                      onChange={(e) => setPatient({...patient, birthDate: e.target.value})}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <button type="submit" className="btn-primary">
+                  <Save size={18} /> Guardar Cambios
+                </button>
+              </form>
             </div>
-            <form onSubmit={handleChangePassword} className="profile-form">
-              <p className="form-info">Cambia tu contraseña de acceso.</p>
-              
-              <div className="input-group">
-                <label>Nueva Contraseña</label>
-                <div className="input-wrapper">
-                  <Lock size={18} />
-                  <input 
-                    type="password" 
-                    placeholder="••••••••"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
 
-              <div className="input-group">
-                <label>Confirmar Contraseña</label>
-                <div className="input-wrapper">
-                  <Lock size={18} />
-                  <input 
-                    type="password" 
-                    placeholder="••••••••"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    required
-                  />
-                </div>
+            {/* Seguridad */}
+            <div className="profile-card">
+              <div className="card-header">
+                <Lock size={24} />
+                <h2>Seguridad</h2>
               </div>
+              <form onSubmit={handleChangePassword} className="profile-form">
+                <p className="form-info">Cambia tu contraseña de acceso.</p>
+                
+                <div className="input-group">
+                  <label>Nueva Contraseña</label>
+                  <div className="input-wrapper">
+                    <Lock size={18} />
+                    <input 
+                      type="password" 
+                      placeholder="••••••••"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
 
-              <button type="submit" className="btn-secondary">
-                Actualizar Contraseña
-              </button>
-            </form>
+                <div className="input-group">
+                  <label>Confirmar Contraseña</label>
+                  <div className="input-wrapper">
+                    <Lock size={18} />
+                    <input 
+                      type="password" 
+                      placeholder="••••••••"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <button type="submit" className="btn-secondary">
+                  Actualizar Contraseña
+                </button>
+              </form>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
