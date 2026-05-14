@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { 
-  Calendar, Clock, ChevronLeft, ChevronRight, ArrowLeft, 
+  Clock, ChevronLeft, ChevronRight, ArrowLeft, 
   CheckCircle, Activity, CalendarDays, FilePlus,
   Plus, User
 } from "lucide-react";
