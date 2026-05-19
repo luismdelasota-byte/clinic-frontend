@@ -55,7 +55,7 @@ const Login: React.FC = () => {
         setErrorMsg(`Error: Credenciales incorrectas. (Status: ${error.response.status})`);
       } else if (error.request) {
         // La petición fue hecha pero no se recibió respuesta (ej. servidor apagado o CORS)
-        setErrorMsg("Error de red: ¿Está encendido tu backend en el puerto 8081? ¿Está configurado CORS?");
+        setErrorMsg("Error de red: No se pudo conectar al servidor. Verifica tu conexión o si el backend está activo.");
       } else {
         setErrorMsg("Error desconocido al intentar iniciar sesión.");
       }

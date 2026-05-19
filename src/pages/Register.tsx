@@ -26,7 +26,11 @@ const Register: React.FC = () => {
       });
       navigate("/login");
     } catch (error: any) {
-      setErrorMsg("Error al registrar: El usuario o email ya podrían existir.");
+      if (error.response && error.response.data) {
+        setErrorMsg(typeof error.response.data === 'string' ? error.response.data : "Error al registrar. Verifica tus datos.");
+      } else {
+        setErrorMsg("Error de conexión al registrar. ¿Está el backend encendido?");
+      }
       console.error(error);
     } finally {
       setLoading(false);
